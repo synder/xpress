@@ -5,7 +5,6 @@
 var Xpress = require('./lib/Xpress');
 var Router = require('./lib/Router');
 
-
 module.exports = Xpress;
 module.exports.Router = Router;
 
