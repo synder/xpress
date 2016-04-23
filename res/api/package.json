@@ -1,0 +1,23 @@
+{
+  "name": "xpress-app",
+  "version": "1.0.0",
+  "description": "a app create by xpress",
+  "scripts": {
+    "test": "mocha",
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "debug":"*",
+    "xpress": "*",
+    "body-parser": "*",
+    "compression": "*",
+    "connect-timeout": "*",
+    "cookie-parser": "*"
+
+  },
+  "devDependencies":{
+    "mocha":"*"
+  },
+  "author": "",
+  "license": "ISC"
+}
