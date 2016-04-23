@@ -10,8 +10,8 @@ var homeCtrl = require('../../controller/home/index');
 
 exports.map = function(){
 
-    homeRouter.get('/', homeCtrl.index);
-    homeRouter.get('/data', homeCtrl.data);
+    homeRouter.get('/', {v:1, c:1}, homeCtrl.index);
+    homeRouter.get('/data', {v:1, c:1}, homeCtrl.data);
 
     return homeRouter;
 };
