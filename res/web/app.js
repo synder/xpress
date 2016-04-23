@@ -52,7 +52,7 @@ server.use(function(app){
 var homeRoute = require('./route/home');
 
 server.route(function(app){
-    app.use('/', homeRoute);
+    app.use('/', homeRoute.router);
 });
 
 
