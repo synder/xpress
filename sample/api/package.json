@@ -7,13 +7,7 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "debug":"*",
-    "xpress": "*",
-    "body-parser": "*",
-    "compression": "*",
-    "connect-timeout": "*",
-    "cookie-parser": "*"
-
+    "express": "*"
   },
   "devDependencies":{
     "mocha":"*"

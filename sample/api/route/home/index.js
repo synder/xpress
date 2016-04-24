@@ -8,9 +8,10 @@ var homeRouter = new Router();
 
 var homeCtrl = require('../../controller/home/index');
 
-exports.map = function(){
 
-    homeRouter.get('/', homeCtrl.page);
+homeRouter.get('/', homeCtrl.index);
+homeRouter.get('/data', {v:1, c:1}, homeCtrl.data);
 
-    return homeRouter;
-};
+
+
+module.exports = homeRouter;
