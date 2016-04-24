@@ -1,5 +1,7 @@
 # sample code
 
+## there is two full sample projects in /sample/api and /sample/web
+
     var ejs = require('ejs');
     var path = require('path');
     var Xpress = require('xpress');
