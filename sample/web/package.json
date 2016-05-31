@@ -13,8 +13,8 @@
     "body-parser": "*",
     "compression": "*",
     "connect-timeout": "*",
-    "cookie-parser": "*"
-
+    "cookie-parser": "*",
+    "express-static":"*"
   },
   "devDependencies":{
     "mocha":"*"

@@ -4,7 +4,9 @@
   "description":"a node.js web and api framework base on express",
   "main":"index.js",
   "dependencies":{
-    "express":"^4.0.0"
+    "express":"^4.0.0",
+    "art-template": "^3.0.3",
+    "request":"^2.72.0"
   },
   "repository":{
     "type": "git",

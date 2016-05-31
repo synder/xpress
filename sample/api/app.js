@@ -1,5 +1,5 @@
 
-var Xpress = require('xpress');
+var Xpress = require('../../index');
 
 //--------------------------------------------------
 var server = new Xpress({
@@ -7,7 +7,7 @@ var server = new Xpress({
     key: null,
     cert: null,
     port: {
-        http: 8001,
+        http: 8003,
         https: null
     }
 });
@@ -18,16 +18,21 @@ server.conf('trust proxy', true);
 
 
 //--------------------------------------------------
+var body = require('body-parser');
+
+server.use(body.json());
+server.use(body.urlencoded({extended: true}));
 server.use(function(req, res, next){ next(); });
 
 
 //--------------------------------------------------
 var homeRouter = require('./route/home');
-server.sub('/home', homeRouter);
+
+server.sub('/', homeRouter);
 
 
 //--------------------------------------------------
-server.cluster(function(message){
+server.listen(function(message){
     console.log(message);
 });
 

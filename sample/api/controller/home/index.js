@@ -16,6 +16,9 @@ exports.index = function(req, res, next){
 };
 
 exports.data = function(req, res, next){
+
+    console.log(req.body);
+    
     res.json({
         code: 1,
         msg : null,

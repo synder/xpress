@@ -4,7 +4,21 @@
  * @desc
  */
 
+var apiRequestor = require('../../helper/apiRequestor');
 
 exports.page = function(req, res, next){
-    res.render('home/index');
+    apiRequestor.post({
+        path: '/',
+        version: 1,
+        channel: 1,
+        body: {
+            name: 'age'
+        }
+    }, function (err, body) {
+        if(err){
+            console.error(err.stack);
+        }
+        res.send(body);
+    });
+
 };

@@ -3,9 +3,7 @@
  * @date 16/1/10
  * @desc
  */
-
-var ejs = require('ejs');
-var Xpress = require('xpress');
+var Xpress = require('../../index');
 var config = require('./config');
 
 //--------------------------------------------------
@@ -22,10 +20,10 @@ var server = new Xpress({
 //--------------------------------------------------
 server.conf('x-powered-by', false);
 server.conf('trust proxy', true);
-server.set('views', config.public.server.view.path);
-server.set('view engine',config.public.server.view.engine);
-server.set('view cache', false);
-server.engine('html', ejs.__express);
+server.conf('views', config.public.server.view.path);
+server.conf('view engine',config.public.server.view.engine);
+server.conf('view cache', false);
+server.engine('html', Xpress.template);
 
 
 //--------------------------------------------------
@@ -45,14 +43,13 @@ server.use(statics(config.public.server.statics.path));
 
 //--------------------------------------------------
 var homeRouter = require('./route/home');
-server.sub('/home', homeRouter);
 
+server.sub('/', homeRouter);
 
 //--------------------------------------------------
 server.listen(function(message){
     console.log(message);
 });
-
 
 //--------------------------------------------------
 module.exports = server;
