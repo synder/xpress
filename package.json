@@ -1,6 +1,6 @@
 {
   "name": "xpress",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description":"a node.js web and api framework base on express",
   "main":"index.js",
   "dependencies":{
