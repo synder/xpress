@@ -23,7 +23,7 @@ server.conf('trust proxy', true);
 server.conf('views', config.public.server.view.path);
 server.conf('view engine',config.public.server.view.engine);
 server.conf('view cache', false);
-server.engine('html', Xpress.template);
+server.engine('html', Xpress.engine);
 
 
 //--------------------------------------------------
