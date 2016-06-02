@@ -5,7 +5,6 @@
 const func = require('../lib/func');
 const assert = require('assert');
 
-
 describe('#all', function() {
 
     describe('#func.pad', function() {
