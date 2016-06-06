@@ -1,16 +1,17 @@
 # sample code
-
-## there is two full sample projects in /sample/api and /sample/web
-
-    var ejs = require('ejs');
-    var path = require('path');
-    var Xpress = require('xpress');
+## there are two full sample projects in /sample/api and /sample/web
+    #cd ./sample/api
+    cd ./sample/web 
+    npm install 
+    node app.js
+### open http://127.0.0.1:8001/, there are many template engine(base on artTemplate) helper sample code
     
-    //key {string} -if you want to listen on https, you should provide this
-    //cert {string} -if you want to listen on https, you should provide this
-    //port.http {number} -if you want to listen on http, you should provide this
-    //port.https {number} -if you want to listen on https, you should provide this
-    //you can also provide port.http and port.https, then server will both listen http and https port
+# create an api server with xpress
+    //import module
+    var Xpress = require('Xpress');
+    var config = require('./config');
+
+    //create server
     var server = new Xpress({
         host: null,
         key: null,
@@ -20,64 +21,82 @@
             https: null
         }
     });
-    
-    //conf is the same like express set
+
+    //configure
     server.conf('x-powered-by', false);
     server.conf('trust proxy', true);
-    server.conf('views', path.join(__dirname, 'views'));
-    server.conf('view engine', 'html');
+    server.conf('views', config.public.server.view.path);
+    server.conf('view engine',config.public.server.view.engine);
     server.conf('view cache', false);
-    server.engine('html', ejs.__express);
-    
-    
-    //register middleware on express Application instance
-    server.use(function(req, res, next){ next(); });
-    //server.use(cookie());
-    
-    //register a controller on server without version and channel control
-    server.get('/', function(req, res, next){
-        res.render('home/index');
+    server.engine('html', Xpress.engine.__express);
+
+
+    //use middleware
+    var body = require('body-parser');
+    var cookie = require('cookie-parser');
+    var timeout = require('connect-timeout');
+    var compression = require("compression");
+    var statics = require('express-static');
+
+    server.use(compression());
+    server.use(timeout('20s'));
+    server.use(cookie());
+    server.use(body.json());
+    server.use(body.urlencoded({extended: true}));
+    server.use(statics(config.public.server.statics.path));
+
+
+    //register an api on a controller with version or channel control
+    //'v' represent version and 'c' represent channel
+    //if you register an api with version and channel control, 
+    //you must set 'X-Accept-Version' and 'X-Client-Channel' on request header, 
+    //xpress will get the two value from the header and compared with the register v and c
+    //if not equal, xpress will skip the controller and jump to the next controller which has registered the same route
+    //you can get and set the two headers on Xpress.defaults.versionHeader and Xpress.defaults.channelHeader
+    server.get('/user', {v:1.0, c: 'ios'}, function(req, res, next){
+        res.json({
+            users: []
+        });
     });
     
-    //register a controller on server with version and channel control
-    server.post('/', {v:1.0, c: 1}, function(req, res, next){
-        res.send('/');
-    });
+    //register an api on a controller without version and channel control
+    server.get('/user/:id', function(req, res, next){
+        res.json({
+            name: 'synder',
+            age : 29
+        });
+    })
     
+    //create a sub router and register on server
+    var Router = Xpress.Router;
+    var productRouter = new Router();
     
-    //create sub router
-    var homeRouter = new Xpress.Router();
+    //register an api on subRouter without version or channel control  
+    productRouter.get('/', function(req, res, next){
+        res.json({
+            products: []
+        });
+    })
     
-    //register a router without version and channel control
-    homeRouter.get('/', function(req, res, next){
-        res.send('/');
-    });
-    
-    //register a router with version or channel control
-    homeRouter.post('/', {v:1.0, c: 1}, function(req, res, next){
-        res.send('/');
-    });
-    
-    server.sub('/home', homeRouter);
-    
-    //add a 404 handler
-    server.error(404, function(err, req, res, next){
-        res.json(err.code);
-    });
-    
-    //add a 500 handler
-    server.error(500, function(err, req, res, next){
-        res.json(err.code);
-    });
-    
-    //start server in single process
+    //register an api on subRouter with version or channel control  
+    productRouter.get('/:id', {v:1, c:1}, function(req, res, next){
+        res.json({
+            products: []
+        });
+    })
+
+    server.sub('/product', productRouter); 
+
+    //listen on host and port
     server.listen(function(message){
         console.log(message);
     });
     
-    //start server in cluster , 4 is the count of worker
-    //server.cluster(4, function(message){
-    //    console.log(message);
+    //listen on host and port with cluster
+    //server.cluster(0, function(msg){
+    //    console.log(msg);
     //});
-    
+
+    //export
     module.exports = server;
+    

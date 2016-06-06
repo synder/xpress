@@ -3,7 +3,7 @@
  * @date 16/1/10
  * @desc
  */
-var Xpress = require('../../index');
+var Xpress = require('Xpress');
 var config = require('./config');
 
 //--------------------------------------------------

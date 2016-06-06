@@ -1,5 +1,5 @@
 
-var Xpress = require('../../index');
+var Xpress = require('Xpress');
 
 //--------------------------------------------------
 var server = new Xpress({

@@ -3,7 +3,7 @@
  * @date 16/1/10
  * @desc
  */
-var Router = require('../../../../index').Router;
+var Router = require('Xpress').Router;
 var homeRouter = new Router();
 
 var homeCtrl = require('../../controller/home/index');
