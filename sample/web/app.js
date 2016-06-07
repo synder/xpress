@@ -46,6 +46,25 @@ var homeRouter = require('./route/home');
 
 server.sub('/', homeRouter);
 
+//---------------------------------------------------------
+
+server.error(404, function (err, req, res, next) {
+    if(req.xhr){
+        res.status(404).json('not found');
+    }else{
+        res.send('error/404.html');
+    }
+});
+
+server.error(500, function (err, req, res, next) {
+    console.error(err.stack);
+    if(req.xhr){
+        res.status(500).json('server error');
+    }else{
+        res.send('error/500.html');
+    }
+});
+
 //--------------------------------------------------
 server.listen(function(message){
     console.log(message);
