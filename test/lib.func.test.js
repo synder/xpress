@@ -5,6 +5,10 @@
 const func = require('../lib/func');
 const assert = require('assert');
 
+console.log(func.chineseCurrency('12300001100'));
+
+console.log("12221".trim('1'));
+
 describe('#all', function() {
 
     describe('#func.pad', function() {
