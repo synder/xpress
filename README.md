@@ -453,3 +453,6 @@ module.exports = server;
         <td>true</td>
     </tr>
 </table>
+
+## art-template
+> refer to [art-template](https://www.npmjs.com/package/art-template)
