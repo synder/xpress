@@ -137,319 +137,319 @@ module.exports = server;
 ## View helper(base on [art-template](https://www.npmjs.com/package/art-template))
 <table cellspacing="0" cellpadding="0">
     <tr>
-        <td>&lt;%= $dateTime(new Date())&gt;%</td>
+        <td>&lt;%= $dateTime(new Date())%&gt;</td>
         <td>2016年06月07日 11时56分38秒</td>
     </tr>
     <tr>
-        <td>&lt;%= $dateTime(Date.now())&gt;%</td>
+        <td>&lt;%= $dateTime(Date.now())%&gt;</td>
         <td>2016年06月07日 11时56分38秒</td>
     </tr>
     <tr>
-        <td>&lt;%=Math.random()&gt;%</td>
+        <td>&lt;%=Math.random()%&gt;</td>
         <td>0.035149546630335315</td>
     </tr>
     <tr>
-        <td>&lt;%= $toString([1,2,3])&gt;%</td>
+        <td>&lt;%= $toString([1,2,3])%&gt;</td>
         <td>[1,2,3]</td>
     </tr>
     <tr>
-        <td>&lt;%= $parseInt('10', 0)&gt;%</td>
+        <td>&lt;%= $parseInt('10', 0)%&gt;</td>
         <td>10</td>
     </tr>
     <tr>
-        <td>&lt;%= $parseInt('NA0122', 0)&gt;%</td>
+        <td>&lt;%= $parseInt('NA0122', 0)%&gt;</td>
         <td>0</td>
     </tr>
     <tr>
-        <td>&lt;%= $parseInt('NA0122')&gt;%</td>
+        <td>&lt;%= $parseInt('NA0122')%&gt;</td>
         <td>null</td>
     </tr>
     <tr>
-        <td>&lt;%= $parseFloat('12.3')&gt;%</td>
+        <td>&lt;%= $parseFloat('12.3')%&gt;</td>
         <td>12.3</td>
     </tr>
     <tr>
-        <td>&lt;%= $parseFloat('a12.3', 0)&gt;%</td>
+        <td>&lt;%= $parseFloat('a12.3', 0)%&gt;</td>
         <td>0</td>
     </tr>
     <tr>
-        <td>&lt;%= $format('%s %X', 'sam', 1000)&gt;%</td>
+        <td>&lt;%= $format('%s %X', 'sam', 1000)%&gt;</td>
         <td>sam 0x3E8</td>
     </tr>
     <tr>
-        <td>&lt;%= $format('%s %o', 'sam', 1000)&gt;%</td>
+        <td>&lt;%= $format('%s %o', 'sam', 1000)%&gt;</td>
         <td>sam 01750</td>
     </tr>
     <tr>
-        <td>&lt;%= $format('%s %d', 'sam', 1000)&gt;%</td>
+        <td>&lt;%= $format('%s %d', 'sam', 1000)%&gt;</td>
         <td>sam 1000</td>
     </tr>
     <tr>
-        <td>&lt;%= $format('%s %b', 'sam', 1000)&gt;%</td>
+        <td>&lt;%= $format('%s %b', 'sam', 1000)%&gt;</td>
         <td>sam 1111101000</td>
     </tr>
     <tr>
-        <td>&lt;%= $format('%c %c', 'sam', 98)&gt;%</td>
+        <td>&lt;%= $format('%c %c', 'sam', 98)%&gt;</td>
         <td>sam b</td>
     </tr>
     <tr>
-        <td>&lt;%= $format('%s %2f', 'sam', 98)&gt;%</td>
+        <td>&lt;%= $format('%s %2f', 'sam', 98)%&gt;</td>
         <td>sam 98.00</td>
     </tr>
     <tr>
-        <td>&lt;%= $format('%s %j', 'sam', {name:1})&gt;%</td>
+        <td>&lt;%= $format('%s %j', 'sam', {name:1})%&gt;</td>
         <td>sam {"name":1}</td>
     </tr>
     <tr>
-        <td>&lt;%= $toString(null)&gt;%</td>
+        <td>&lt;%= $toString(null)%&gt;</td>
         <td></td>
     </tr>
     <tr>
-        <td>&lt;%= $toString({name: 1})&gt;%</td>
+        <td>&lt;%= $toString({name: 1})%&gt;</td>
         <td>{"name":1}</td>
     </tr>
     <tr>
-        <td>&lt;%= $toString([12,3])&gt;%</td>
+        <td>&lt;%= $toString([12,3])%&gt;</td>
         <td>[12,3]</td>
     </tr>
     <tr>
-        <td>&lt;%= $join('10', '2', '6', '+')&gt;%</td>
+        <td>&lt;%= $join('10', '2', '6', '+')%&gt;</td>
         <td>10+2+6</td>
     </tr>
     <tr>
-        <td>&lt;%= $join('10', null, '6', '9', '+')&gt;%</td>
+        <td>&lt;%= $join('10', null, '6', '9', '+')%&gt;</td>
         <td>10+6+9</td>
     </tr>
     <tr>
-        <td>&lt;%= $join(null, null, '6', '+')&gt;%</td>
+        <td>&lt;%= $join(null, null, '6', '+')%&gt;</td>
         <td>6</td>
     </tr>
     <tr>
-        <td>&lt;%= $join(null, '6', '', '+')&gt;%</td>
+        <td>&lt;%= $join(null, '6', '', '+')%&gt;</td>
         <td>6</td>
     </tr>
     <tr>
-        <td>&lt;%= $trim('  name  ')&gt;%</td>
+        <td>&lt;%= $trim('  name  ')%&gt;</td>
         <td>name</td>
     </tr>
     <tr>
-        <td>&lt;%= $mask('18083489462', '*', 4, 5)&gt;%</td>
+        <td>&lt;%= $mask('18083489462', '*', 4, 5)%&gt;</td>
         <td>180*****462</td>
     </tr>
     <tr>
-        <td>&lt;%= $mask('18083489462', '*', -1, 5)&gt;%</td>
+        <td>&lt;%= $mask('18083489462', '*', -1, 5)%&gt;</td>
         <td>18083******</td>
     </tr>
     <tr>
-        <td>&lt;%= $pad('12222', 10, '0', 'left')&gt;%</td>
+        <td>&lt;%= $pad('12222', 10, '0', 'left')%&gt;</td>
         <td>0000012222</td>
     </tr>
     <tr>
-        <td>&lt;%= $pad('12222', 10, '0', 'right')&gt;%</td>
+        <td>&lt;%= $pad('12222', 10, '0', 'right')%&gt;</td>
         <td>1222200000</td>
     </tr>
     <tr>
-        <td>&lt;%= $clean(' 122 22 ')&gt;%</td>
+        <td>&lt;%= $clean(' 122 22 ')%&gt;</td>
         <td>122 22</td>
     </tr>
     <tr>
-        <td>&lt;%= $toString($lines('122\r\n22132'))&gt;%</td>
+        <td>&lt;%= $toString($lines('122\r\n22132'))%&gt;</td>
         <td>[122,22132]</td>
     </tr>
     <tr>
-        <td>&lt;%= $toString($lines('122\r22132'))&gt;%</td>
+        <td>&lt;%= $toString($lines('122\r22132'))%&gt;</td>
         <td>[122,22132]</td>
     </tr>
     <tr>
-        <td>&lt;%= $truncate('122212313213132132', 13, '...')&gt;%</td>
+        <td>&lt;%= $truncate('122212313213132132', 13, '...')%&gt;</td>
         <td>1222123132...</td>
     </tr>
     <tr>
-        <td>&lt;%= $chineseCurrency('92102600401.001')&gt;%</td>
+        <td>&lt;%= $chineseCurrency('92102600401.001')%&gt;</td>
         <td>玖佰贰拾壹亿零贰佰陆拾萬零肆佰零壹</td>
     </tr>
     <tr>
-        <td>&lt;%= $currency(242605401.001, '$', 2)&gt;%</td>
+        <td>&lt;%= $currency(242605401.001, '$', 2)%&gt;</td>
         <td>&lt;%= $242,605,401.00</td>
     </tr>
     <tr>
-        <td>&lt;%= $upperCase('AbddessSww')&gt;%</td>
+        <td>&lt;%= $upperCase('AbddessSww')%&gt;</td>
         <td>ABDDESSSWW</td>
     </tr>
     <tr>
-        <td>&lt;%= $lowerCase('AbddessSww')&gt;%</td>
+        <td>&lt;%= $lowerCase('AbddessSww')%&gt;</td>
         <td>abddesssww</td>
     </tr>
     <tr>
-        <td>&lt;%= $capitalize('AbddessSww')&gt;%</td>
+        <td>&lt;%= $capitalize('AbddessSww')%&gt;</td>
         <td>AbddessSww</td>
     </tr>
     <tr>
-        <td>&lt;%= $capitalize('AbddessSww', true)&gt;%</td>
+        <td>&lt;%= $capitalize('AbddessSww', true)%&gt;</td>
         <td>Abddesssww</td>
     </tr>
     <tr>
-        <td>&lt;%= $bankCard('233546454633344332')&gt;%</td>
+        <td>&lt;%= $bankCard('233546454633344332')%&gt;</td>
         <td>2335 4645 4633 3443 32</td>
     </tr>
     <tr>
-        <td>&lt;%= $number(0.5, 3)&gt;%</td>
+        <td>&lt;%= $number(0.5, 3)%&gt;</td>
         <td>0.500</td>
     </tr>
     <tr>
-        <td>&lt;%= $thousands(2783619263)&gt;%</td>
+        <td>&lt;%= $thousands(2783619263)%&gt;</td>
         <td>2,783,619,263</td>
     </tr>
     <tr>
-        <td>&lt;%= $percentage(0.5)&gt;%</td>
-        <td>50&gt;%</td>
+        <td>&lt;%= $percentage(0.5)%&gt;</td>
+        <td>50%&gt;</td>
     </tr>
     <tr>
-        <td>&lt;%= $percentage(0.523366, 2)&gt;%</td>
-        <td>52.34&gt;%</td>
+        <td>&lt;%= $percentage(0.523366, 2)%&gt;</td>
+        <td>52.34%&gt;</td>
     </tr>
     <tr>
-        <td>&lt;%= $versionPath('/name', 10)&gt;%</td>
+        <td>&lt;%= $versionPath('/name', 10)%&gt;</td>
         <td>/name?version=10</td>
     </tr>
     <tr>
-        <td>&lt;%= $joinPath('/name', '//age')&gt;%</td>
+        <td>&lt;%= $joinPath('/name', '//age')%&gt;</td>
         <td>/name/age</td>
     </tr>
     <tr>
-        <td>&lt;%= $normalizePath('///name/age')&gt;%</td>
+        <td>&lt;%= $normalizePath('///name/age')%&gt;</td>
         <td>/name/age</td>
     </tr>
     <tr>
-        <td>&lt;%= $date('2016-06-01T07:05:36.838Z', '-')&gt;%</td>
+        <td>&lt;%= $date('2016-06-01T07:05:36.838Z', '-')%&gt;</td>
         <td>2016-06-01</td>
     </tr>
     <tr>
-        <td>&lt;%= $time('2016-06-01T07:05:36.838Z', ':')&gt;%</td>
+        <td>&lt;%= $time('2016-06-01T07:05:36.838Z', ':')%&gt;</td>
         <td>15:05:37</td>
     </tr>
     <tr>
-        <td>&lt;%= $dateTime('2016-06-01T07:05:36.838Z', '-', ':')&gt;%</td>
+        <td>&lt;%= $dateTime('2016-06-01T07:05:36.838Z', '-', ':')%&gt;</td>
         <td>2016-06-01 15:05:37</td>
     </tr>
     <tr>
-        <td>&lt;%= $dateTime('2016-06-01T07:05:36.838Z')&gt;%</td>
+        <td>&lt;%= $dateTime('2016-06-01T07:05:36.838Z')%&gt;</td>
         <td>2016年06月01日 15时05分37秒</td>
     </tr>
     <tr>
-        <td>&lt;%= $urlFormat('/home', {name:1}, 'http', '127.0.0.1')&gt;%</td>
+        <td>&lt;%= $urlFormat('/home', {name:1}, 'http', '127.0.0.1')%&gt;</td>
         <td>http://127.0.0.1/home?name=1</td>
     </tr>
     <tr>
-        <td>&lt;%= $urlFormat('/home', {name:1})&gt;%</td>
+        <td>&lt;%= $urlFormat('/home', {name:1})%&gt;</td>
         <td>/home?name=1</td>
     </tr>
     <tr>
-        <td>&lt;%= $encodeURIComponent('/测试 账号')&gt;%</td>
+        <td>&lt;%= $encodeURIComponent('/测试 账号')%&gt;</td>
         <td>%2F%E6%B5%8B%E8%AF%95%20%E8%B4%A6%E5%8F%B7</td>
     </tr>
     <tr>
-        <td>&lt;%= $decodeURIComponent($encodeURIComponent('/测试 账号'))&gt;%</td>
+        <td>&lt;%= $decodeURIComponent($encodeURIComponent('/测试 账号'))%&gt;</td>
         <td>/测试 账号</td>
     </tr>
     <tr>
-        <td>&lt;%= $encodeURI('/测试 账号')&gt;%</td>
+        <td>&lt;%= $encodeURI('/测试 账号')%&gt;</td>
         <td>/%E6%B5%8B%E8%AF%95%20%E8%B4%A6%E5%8F%B7</td>
     </tr>
     <tr>
-        <td>&lt;%= $decodeURI($encodeURI('/测试 账号'))&gt;%</td>
+        <td>&lt;%= $decodeURI($encodeURI('/测试 账号'))%&gt;</td>
         <td>/测试 账号</td>
     </tr>
     <tr>
-        <td>&lt;%= $isNull(null)&gt;%</td>
+        <td>&lt;%= $isNull(null)%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isNull(undefined)&gt;%</td>
+        <td>&lt;%= $isNull(undefined)%&gt;</td>
         <td>false</td>
     </tr>
     <tr>
-        <td>&lt;%= $isUndefined(undefined)&gt;%</td>
+        <td>&lt;%= $isUndefined(undefined)%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isUndefined(null)&gt;%</td>
+        <td>&lt;%= $isUndefined(null)%&gt;</td>
         <td>false</td>
     </tr>
     <tr>
-        <td>&lt;%= $isNullOrUndefined(null)&gt;%</td>
+        <td>&lt;%= $isNullOrUndefined(null)%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isNullOrUndefined(undefined)&gt;%</td>
+        <td>&lt;%= $isNullOrUndefined(undefined)%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isArray([])&gt;%</td>
+        <td>&lt;%= $isArray([])%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isDate(new Date())&gt;%</td>
+        <td>&lt;%= $isDate(new Date())%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isDate('2012-03-01')&gt;%</td>
+        <td>&lt;%= $isDate('2012-03-01')%&gt;</td>
         <td>false</td>
     </tr>
     <tr>
-        <td>&lt;%= $isString('name')&gt;%</td>
+        <td>&lt;%= $isString('name')%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isString({})&gt;%</td>
+        <td>&lt;%= $isString({})%&gt;</td>
         <td>false</td>
     </tr>
     <tr>
-        <td>&lt;%= $isString(null)&gt;%</td>
+        <td>&lt;%= $isString(null)%&gt;</td>
         <td>false</td>
     </tr>
     <tr>
-        <td>&lt;%= $isNumber(1)&gt;%</td>
+        <td>&lt;%= $isNumber(1)%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isBool(true)&gt;%</td>
+        <td>&lt;%= $isBool(true)%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isInt(1.1)&gt;%</td>
+        <td>&lt;%= $isInt(1.1)%&gt;</td>
         <td>false</td>
     </tr>
     <tr>
-        <td>&lt;%= $isInt(1)&gt;%</td>
+        <td>&lt;%= $isInt(1)%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isFloat(1.1)&gt;%</td>
+        <td>&lt;%= $isFloat(1.1)%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isFloat(1)&gt;%</td>
+        <td>&lt;%= $isFloat(1)%&gt;</td>
         <td>false</td>
     </tr>
     <tr>
-        <td>&lt;%= $isObject(null)&gt;%</td>
+        <td>&lt;%= $isObject(null)%&gt;</td>
         <td>false</td>
     </tr>
     <tr>
-        <td>&lt;%= $isObject({})&gt;%</td>
+        <td>&lt;%= $isObject({})%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isObject([])&gt;%</td>
+        <td>&lt;%= $isObject([])%&gt;</td>
         <td>true</td>
     </tr>
     <tr>
-        <td>&lt;%= $isDictionary([])&gt;%</td>
+        <td>&lt;%= $isDictionary([])%&gt;</td>
         <td>false</td>
     </tr>
     <tr>
-        <td>&lt;%= $isDictionary({})&gt;%</td>
+        <td>&lt;%= $isDictionary({})%&gt;</td>
         <td>true</td>
     </tr>
 </table>
