@@ -7,17 +7,17 @@ const os = require('os');
 const util = require('util');
 const http = require('http');
 const https = require('https');
+const debug = require('debug');
+const colors = require('colors');
 const events = require('events');
 const cluster = require('cluster');
 const express = require('express');
 const route = require('./route');
 const Router = require('./Router');
 const template = require('./template');
-const monitor = require('./monitor');
-const enums = require('./enum');
 const EventEmitter = events.EventEmitter;
 
-
+var logger = console.log;
 /**
  * @desc create a Xpress instance
  * @constructor HttpServer
@@ -27,7 +27,6 @@ const EventEmitter = events.EventEmitter;
  *      host : null,
  *      key : 'string',    //https private key
  *      cert : 'string',   //https cert
- *      monitor: true,     //open monitor on server
  *      port : {
  *          http  : 8000, //if need listen on http , you should provide this port number
  *          https : 4433  //if need listen on https , you should provide this port number
@@ -35,7 +34,6 @@ const EventEmitter = events.EventEmitter;
  * }
  * */
 var Xpress = function (options) {
-    "use strict";
 
     options = options || {};
 
@@ -47,12 +45,12 @@ var Xpress = function (options) {
 
     this.__cert = options.cert;
 
-    this.__monitor = options.monitor || false;
-
     this.__port = {
         http: options.port.http,
         https: options.port.https
     };
+
+    this.__trace = options.trace || false;
 
     this.__defaultHeaders = {
         version: Xpress.defaults.versionHeader,
@@ -60,7 +58,19 @@ var Xpress = function (options) {
     };
 
     //Have record registration error handler
-    this.__hadRegisteredErrorHandler = false;
+    this.__errorHandler = {
+        '404': function (req, res) {
+            var err = new Error('resource not found');
+            err.code = 404;
+            console.warn(err.message, err.code, req.originalUrl);
+            res.status(err.code).send('resource not found');
+        },
+        '500': function (err, req, res) {
+            err.code = err.code || 500;
+            console.error(err.message, err.code, req.originalUrl);
+            res.status(err.code).send(err.message);
+        }
+    };
 
     this.httpServer = null;
     this.httpsServer = null;
@@ -88,37 +98,16 @@ util.inherits(Xpress, EventEmitter);
  * @desc
  * */
 Xpress.defaults = {
-    versionHeader : 'X-Accept-Version',
+    versionHeader: 'X-Accept-Version',
     channelHeader: 'X-Client-Channel'
 };
 
-/**
- * @desc events
- * */
-Xpress.EVENTS = {
-    RESPONSE_EXCEPTION : enums.MONITOR_EVENTS.RESPONSE_EXCEPTION
-};
 
 /**
  * @desc template engine base on art-template
  * */
 Xpress.engine = template.engine;
 
-/**
- * @desc wrap monitor
- * */
-Xpress.prototype.__control = function () {
-    var self = this;
-    if(self.__monitor){
-        monitor.wrapCreateServer(http, function (error, req, res) {
-            self.emit(enums.MONITOR_EVENTS.RESPONSE_EXCEPTION, error, req, res);
-        });
-
-        monitor.wrapCreateServer(https, function (error, req, res) {
-            self.emit(enums.MONITOR_EVENTS.RESPONSE_EXCEPTION, error, req, res);
-        });
-    }
-};
 
 /**
  * @desc create server
@@ -156,13 +145,20 @@ Xpress.prototype.__parser = function () {
         req.channel = req.headers[channelHeader]; //get api channel
         next();
     });
+
+    if(self.__trace){
+        self.application.use(function (req, res, next) {
+            logger(colors.green('REQUEST: %s  {v:%s, c:%s}  %s'), req.method, req.version, req.channel, req.originalUrl);
+            next();
+        });
+    }
 };
 
 /**
  * @desc wraper http method
  * */
 Xpress.prototype.__method = function () {
-    route.method(Xpress, this, this.application);
+    route.method(Xpress, this, this.application, this.__trace);
 };
 
 /**
@@ -170,7 +166,6 @@ Xpress.prototype.__method = function () {
  * @access private
  * */
 Xpress.prototype.__init = function () {
-    this.__control();
     this.__server();
     this.__parser();
     this.__method();
@@ -216,17 +211,17 @@ Xpress.prototype.use = function (fn) {
  * @desc register a sub router
  * */
 Xpress.prototype.sub = function (path, router) {
-    if(arguments.length === 2){
-        if(!(arguments[1] instanceof Router)){
+    if (arguments.length === 2) {
+        if (!(arguments[1] instanceof Router)) {
             throw new Error('sub router must be a Xpress.Router instance');
         }
         this.application.use(arguments[0], arguments[1].router);
-    }else if(arguments.length === 1){
-        if(!(arguments[0] instanceof Router)){
+    } else if (arguments.length === 1) {
+        if (!(arguments[0] instanceof Router)) {
             throw new Error('sub router must be a Xpress.Router instance');
         }
         this.application.use(arguments[0].router);
-    }else{
+    } else {
         throw new Error('this function receive at most two params');
     }
 };
@@ -239,23 +234,21 @@ Xpress.prototype.sub = function (path, router) {
  * */
 Xpress.prototype.error = function (code, fn) {
 
-    if(arguments.length !== 2){
+    if (arguments.length !== 2) {
         throw new Error('this function receive two params');
     }
 
-    this.__hadRegisteredErrorHandler = true;
-
-    if(code === 404){
-        this.application.use(function(req, res, next){
+    if (code === 404) {
+        this.__errorHandler[404] = function (req, res, next) {
             var err = new Error('resource not found');
             err.code = 404;
             fn(err, req, res, next);
-        });
-    }else{
-        this.application.use(function(err, req, res, next){
+        };
+    } else {
+        this.__errorHandler[500] = function (err, req, res, next) {
             err.code = err.code || 500;
             fn(err, req, res, next);
-        });
+        };
     }
 };
 
@@ -277,20 +270,8 @@ Xpress.prototype.listen = function (callback) {
     }
 
     //register a default error handler
-    if(self.__hadRegisteredErrorHandler == false){
-        self.application.use(function(req, res){
-            var err = new Error('resource not found');
-            err.code = 404;
-            console.warn(err.message, err.code, req.originalUrl);
-            res.status(err.code).send('resource not found');
-        });
-
-        self.application.use(function(err, req, res){
-            err.code = err.code || 500;
-            console.error(err.message, err.code, req.originalUrl);
-            res.status(err.code).send(err.message);
-        });
-    }
+    self.application.use(self.__errorHandler[404]);
+    self.application.use(self.__errorHandler[500]);
 
     var listenMessage = '';
     var flag = 0;
@@ -359,7 +340,6 @@ Xpress.prototype.listen = function (callback) {
 
     }
 };
-
 
 
 /**

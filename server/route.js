@@ -1,21 +1,15 @@
 /**
  * Created by synder on 16/4/23.
  */
-
+const colors = require('colors');
 var METHODS = require('./method');
+
+const logger = console.log;
 
 /**
  * @desc show warn info
  * */
 const warn = function (option) {
-    if (option.v !== null && option.v !== undefined && typeof option.v !== 'number') {
-        console.warn('Number type version is fast than other type version');
-    }
-
-    if (option.c !== null && option.c !== undefined && typeof option.c !== 'number') {
-        console.warn('Number type channel is fast than other type channel');
-    }
-
     if(option.v === 0){
         throw new Error('version can not set to 0');
     }
@@ -23,34 +17,34 @@ const warn = function (option) {
     if(option.c === 0){
         throw new Error('channel can not set to 0');
     }
-
 };
 
 /***
  * @desc wraper http method on Xpress instance
  */
-const wraper = function (option, handler) {
+const wraper = function (option, handler, trace) {
     return function (req, res, next) {
+
         if (option.v) {
-
-            if(!req.version){
-                console.warn('request version is not assign, please check the request again');
-            }
-
             if (req.version != option.v) {
+                if(trace){
+                    logger(colors.yellow('SKIP: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
+                }
                 return next();
             }
         }
 
         if (option.c) {
-
-            if(!req.channel){
-                console.warn('request channel is not assign, please check the request again');
-            }
-
             if (req.channel != option.c) {
+                if(trace){
+                    logger(colors.yellow('SKIP: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
+                }
                 return next();
             }
+        }
+
+        if(trace){
+            logger(colors.green('MATCH: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
         }
 
         handler(req, res, next);
@@ -58,7 +52,7 @@ const wraper = function (option, handler) {
 };
 
 
-exports.method = function (Prototype, instance, router) {
+exports.method = function (Prototype, instance, router, trace) {
 
     METHODS.push('all');
 
@@ -91,7 +85,7 @@ exports.method = function (Prototype, instance, router) {
                 } else {
                     warn(arguments[0]);
                     for (var y = 1; y < arguments.length; y++) {
-                        router[method](wraper(arguments[0], arguments[y]));
+                        router[method](wraper(arguments[0], arguments[y], trace));
                     }
                 }
                 return instance;
@@ -103,7 +97,7 @@ exports.method = function (Prototype, instance, router) {
 
                 for (var i = 2; i < arguments.length; i++) {
                     if (typeof arguments[i]) {
-                        router[method](arguments[0], wraper(arguments[1], arguments[i]));
+                        router[method](arguments[0], wraper(arguments[1], arguments[i], trace));
                     }
                 }
 

@@ -6,7 +6,11 @@
   "dependencies":{
     "express":"^4.0.0",
     "art-template": "^3.0.3",
-    "request":"^2.72.0"
+    "debug":"^2.2.0",
+    "colors":"^1.1.2"
+  },
+  "devDependencies": {
+    "body-parser":"*"
   },
   "repository":{
     "type": "git",
