@@ -39,6 +39,8 @@ var Xpress = function (options) {
 
     EventEmitter.call(this);
 
+    var self = this;
+
     this.__host = options.host || null;
 
     this.__key = options.key;
@@ -60,14 +62,18 @@ var Xpress = function (options) {
     //Have record registration error handler
     this.__errorHandler = {
         '404': function (req, res) {
-            var err = new Error('resource not found');
+            var err = new Error('resource not found:' + req.originalUrl);
             err.code = 404;
-            console.warn(err.message, err.code, req.originalUrl);
+            if(self.__trace){
+                logger(colors.red('NOT FOUND: %s {v:%s, c:%s} %s'), req.method, req.version, req.channel, req.originalUrl);
+            }
             res.status(err.code).send('resource not found');
         },
         '500': function (err, req, res) {
             err.code = err.code || 500;
-            console.error(err.message, err.code, req.originalUrl);
+            if(self.__trace){
+                console.error(err.stack);
+            }
             res.status(err.code).send(err.message);
         }
     };
@@ -148,7 +154,7 @@ Xpress.prototype.__parser = function () {
 
     if(self.__trace){
         self.application.use(function (req, res, next) {
-            logger(colors.green('REQUEST: %s  {v:%s, c:%s}  %s'), req.method, req.version, req.channel, req.originalUrl);
+            logger(colors.green('REQU: %s {v:%s, c:%s}  %s'), req.method, req.version, req.channel, req.originalUrl);
             next();
         });
     }
@@ -238,15 +244,23 @@ Xpress.prototype.error = function (code, fn) {
         throw new Error('this function receive two params');
     }
 
+    var self = this;
+
     if (code === 404) {
         this.__errorHandler[404] = function (req, res, next) {
-            var err = new Error('resource not found');
+            var err = new Error('resource not found:' + req.originalUrl);
             err.code = 404;
+            if(self.__trace){
+                logger(colors.red('NOT FOUND: %s {v:%s, c:%s} %s'), req.method, req.version, req.channel, req.originalUrl);
+            }
             fn(err, req, res, next);
         };
     } else {
         this.__errorHandler[500] = function (err, req, res, next) {
             err.code = err.code || 500;
+            if(self.__trace){
+                console.error(err.stack);
+            }
             fn(err, req, res, next);
         };
     }
