@@ -28,7 +28,7 @@ const wraper = function (option, handler, trace) {
         if (option.v) {
             if (req.version != option.v) {
                 if(trace){
-                    logger(colors.yellow('SKIP: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
+                    logger(colors.yellow('SKIP ROUTE: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
                 }
                 return next();
             }
@@ -37,14 +37,14 @@ const wraper = function (option, handler, trace) {
         if (option.c) {
             if (req.channel != option.c) {
                 if(trace){
-                    logger(colors.yellow('SKIP: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
+                    logger(colors.yellow('SKIP ROUTE: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
                 }
                 return next();
             }
         }
 
         if(trace){
-            logger(colors.green('MATCH: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
+            logger(colors.green('MATCH ROUTE: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
         }
 
         handler(req, res, next);

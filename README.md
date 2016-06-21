@@ -97,15 +97,22 @@ server.get('/user/:id', function(req, res, next){
 var Router = Xpress.Router;
 var productRouter = new Router();
 //register an api on subRouter without version or channel control  
+//import utils 
+var string = Xpress.string;
+var parser = Xpress.parser;
+var validate = Xpress.validate;
 productRouter.get('/', function(req, res, next){
-    res.json({
-        products: []
-    });
+    if(validate.isPassword(req.query.pass)){
+		res.json({
+        	bankCard: string.bankCard('6666666666666666')
+    	});
+	}
 })
 //register an api on subRouter with version or channel control  
 productRouter.get('/:id', {v:1, c:1}, function(req, res, next){
+	var id = parser.parseInt(req.params.id, 10);
     res.json({
-        products: []
+        id: id
     });
 })
 server.sub('/product', productRouter); 

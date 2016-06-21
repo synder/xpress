@@ -154,7 +154,7 @@ Xpress.prototype.__parser = function () {
 
     if(self.__trace){
         self.application.use(function (req, res, next) {
-            logger(colors.green('REQU: %s {v:%s, c:%s}  %s'), req.method, req.version, req.channel, req.originalUrl);
+            logger(colors.green('REQUEST URL: %s {v:%s, c:%s}  %s'), req.method, req.version, req.channel, req.originalUrl);
             next();
         });
     }
@@ -251,7 +251,7 @@ Xpress.prototype.error = function (code, fn) {
             var err = new Error('resource not found:' + req.originalUrl);
             err.code = 404;
             if(self.__trace){
-                logger(colors.red('NOT FOUND: %s {v:%s, c:%s} %s'), req.method, req.version, req.channel, req.originalUrl);
+                logger(colors.red('NOT FOUND ROUTE: %s {v:%s, c:%s} %s'), req.method, req.version, req.channel, req.originalUrl);
             }
             fn(err, req, res, next);
         };

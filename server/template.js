@@ -2,11 +2,10 @@
  * Created by synder on 16/5/31.
  */
 
-
+const url = require('../lib/url');
 const parser = require('../lib/parser');
 const string = require('../lib/string');
-const type = require('../lib/type');
-const url = require('../lib/url');
+const validate = require('../lib/validate');
 
 const artTemplateNative = require('art-template/node/template-native.js');
 
@@ -65,18 +64,18 @@ artTemplateNative.helper('$bankCard', string.bankCard);
 artTemplateNative.helper('$percentage', string.percentage);
 artTemplateNative.helper('$number', string.number);
 
-artTemplateNative.helper('$isNull', type.isNull);
-artTemplateNative.helper('$isUndefined', type.isUndefined);
-artTemplateNative.helper('$isNullOrUndefined', type.isNullOrUndefined);
-artTemplateNative.helper('$isDate', type.isDate);
-artTemplateNative.helper('$isArray', type.isArray);
-artTemplateNative.helper('$isString', type.isString);
-artTemplateNative.helper('$isNumber', type.isNumber);
-artTemplateNative.helper('$isNaN', type.isNaN);
-artTemplateNative.helper('$isBool', type.isBool);
-artTemplateNative.helper('$isInt', type.isInt);
-artTemplateNative.helper('$isFloat', type.isFloat);
-artTemplateNative.helper('$isObject', type.isObject);
-artTemplateNative.helper('$isDictionary', type.isDictionary);
+artTemplateNative.helper('$isNull', validate.isNull);
+artTemplateNative.helper('$isUndefined', validate.isUndefined);
+artTemplateNative.helper('$isNullOrUndefined', validate.isNullOrUndefined);
+artTemplateNative.helper('$isDate', validate.isDate);
+artTemplateNative.helper('$isArray', validate.isArray);
+artTemplateNative.helper('$isString', validate.isString);
+artTemplateNative.helper('$isNumber', validate.isNumber);
+artTemplateNative.helper('$isNaN', validate.isNaN);
+artTemplateNative.helper('$isBool', validate.isBool);
+artTemplateNative.helper('$isInt', validate.isInt);
+artTemplateNative.helper('$isFloat', validate.isFloat);
+artTemplateNative.helper('$isObject', validate.isObject);
+artTemplateNative.helper('$isDictionary', validate.isDictionary);
 
 exports.engine = artTemplateNative;
