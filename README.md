@@ -38,6 +38,7 @@ var server = new Xpress({
     host: null,
     key: null,
     cert: null,
+    trace: true, //open route trace
     port: {
         http: 8001,
         https: null
