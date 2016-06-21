@@ -103,14 +103,14 @@ var parser = Xpress.parser;
 var validate = Xpress.validate;
 productRouter.get('/', function(req, res, next){
     if(validate.isPassword(req.query.pass)){
-		res.json({
-        	bankCard: string.bankCard('6666666666666666')
-    	});
+        res.json({
+            bankCard: string.bankCard('6666666666666666')
+        });
 	}
 })
 //register an api on subRouter with version or channel control  
 productRouter.get('/:id', {v:1, c:1}, function(req, res, next){
-	var id = parser.parseInt(req.params.id, 10);
+    var id = parser.parseInt(req.params.id, 10);
     res.json({
         id: id
     });
