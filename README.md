@@ -105,7 +105,7 @@ var validate = Xpress.validate;
 productRouter.get('/', function(req, res, next){
     if(validate.isPassword(req.query.pass)){
         res.json({
-            bankCard: string.bankCard('6666666666666666')
+            bankCard: string.bankCard('6666666666666666')    
         });
 	}
 })
