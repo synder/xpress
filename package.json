@@ -7,10 +7,12 @@
     "express":"^4.0.0",
     "art-template": "^3.0.3",
     "debug":"^2.2.0",
-    "colors":"^1.1.2"
+    "colors":"^1.1.2",
+    "async":"*"
   },
   "devDependencies": {
-    "body-parser":"*"
+    "body-parser":"*",
+    "mocha":"*"
   },
   "repository":{
     "type": "git",
