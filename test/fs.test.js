@@ -5,6 +5,6 @@
 
 var fs = require('../lib/fs');
 
-fs.save('./name.txt', "name", function (err) {
-    console.error(err);
+fs.access('/usr', {r:true, w:true, x: false}, function (err) {
+   console.log(err);
 });
