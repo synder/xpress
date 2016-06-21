@@ -153,7 +153,7 @@ module.exports = server;
         <td>2016年06月07日 11时56分38秒</td>
     </tr>
     <tr>
-        <td>&lt;%=Math.random()%&gt;</td>
+        <td>&lt;%= $Math.random()%&gt;</td>
         <td>0.035149546630335315</td>
     </tr>
     <tr>
