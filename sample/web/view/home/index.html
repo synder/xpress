@@ -236,18 +236,23 @@
         </tr>
 
         <tr>
-            <td>$versionPath('/name', 10)</td>
+            <td>$urlPathVersion('/name', 10)</td>
             <td><%= $versionPath('/name', 10)%></td>
         </tr>
 
         <tr>
-            <td>$joinPath('/name', '//age')</td>
+            <td>$urlPathJoin('/name', '//age')</td>
             <td><%= $joinPath('/name', '//age')%></td>
         </tr>
 
         <tr>
-            <td>$normalizePath('///name/age')</td>
-            <td><%= $normalizePath('///name/age')%></td>
+            <td>$urlFormat('/home', {name:1}, 'http', '127.0.0.1')</td>
+            <td><%= $urlFormat('/home', {name:1}, 'http', '127.0.0.1')%></td>
+        </tr>
+
+        <tr>
+            <td>$urlFormat('/home', {name:1})</td>
+            <td><%= $urlFormat('/home', {name:1})%></td>
         </tr>
 
         <tr>
@@ -265,14 +270,6 @@
         <tr>
             <td>$dateTime('2016-06-01T07:05:36.838Z')</td>
             <td><%= $dateTime('2016-06-01T07:05:36.838Z')%></td>
-        </tr>
-        <tr>
-            <td>$urlFormat('/home', {name:1}, 'http', '127.0.0.1')</td>
-            <td><%= $urlFormat('/home', {name:1}, 'http', '127.0.0.1')%></td>
-        </tr>
-        <tr>
-            <td>$urlFormat('/home', {name:1})</td>
-            <td><%= $urlFormat('/home', {name:1})%></td>
         </tr>
 
         <tr>

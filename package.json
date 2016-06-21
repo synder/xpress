@@ -1,6 +1,6 @@
 {
   "name": "xpress",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description":"a node.js web and api framework base on express which provide api version and channel control",
   "main":"index.js",
   "dependencies":{

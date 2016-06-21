@@ -277,7 +277,7 @@ module.exports = server;
     </tr>
     <tr>
         <td>&lt;%= $currency(242605401.001, '$', 2)%&gt;</td>
-        <td>&lt;%= $242,605,401.00</td>
+        <td>$242,605,401.00</td>
     </tr>
     <tr>
         <td>&lt;%= $upperCase('AbddessSww')%&gt;</td>
@@ -309,39 +309,19 @@ module.exports = server;
     </tr>
     <tr>
         <td>&lt;%= $percentage(0.5)%&gt;</td>
-        <td>50%&gt;</td>
+        <td>50%</td>
     </tr>
     <tr>
         <td>&lt;%= $percentage(0.523366, 2)%&gt;</td>
-        <td>52.34%&gt;</td>
+        <td>52.34%</td>
     </tr>
     <tr>
-        <td>&lt;%= $versionPath('/name', 10)%&gt;</td>
+        <td>&lt;%= $urlPathVersion('/name', 10)%&gt;</td>
         <td>/name?version=10</td>
     </tr>
     <tr>
-        <td>&lt;%= $joinPath('/name', '//age')%&gt;</td>
+        <td>&lt;%= $urlPathJoin('/name', '//age')%&gt;</td>
         <td>/name/age</td>
-    </tr>
-    <tr>
-        <td>&lt;%= $normalizePath('///name/age')%&gt;</td>
-        <td>/name/age</td>
-    </tr>
-    <tr>
-        <td>&lt;%= $date('2016-06-01T07:05:36.838Z', '-')%&gt;</td>
-        <td>2016-06-01</td>
-    </tr>
-    <tr>
-        <td>&lt;%= $time('2016-06-01T07:05:36.838Z', ':')%&gt;</td>
-        <td>15:05:37</td>
-    </tr>
-    <tr>
-        <td>&lt;%= $dateTime('2016-06-01T07:05:36.838Z', '-', ':')%&gt;</td>
-        <td>2016-06-01 15:05:37</td>
-    </tr>
-    <tr>
-        <td>&lt;%= $dateTime('2016-06-01T07:05:36.838Z')%&gt;</td>
-        <td>2016年06月01日 15时05分37秒</td>
     </tr>
     <tr>
         <td>&lt;%= $urlFormat('/home', {name:1}, 'http', '127.0.0.1')%&gt;</td>
@@ -366,6 +346,22 @@ module.exports = server;
     <tr>
         <td>&lt;%= $decodeURI($encodeURI('/测试 账号'))%&gt;</td>
         <td>/测试 账号</td>
+    </tr>
+    <tr>
+        <td>&lt;%= $date('2016-06-01T07:05:36.838Z', '-')%&gt;</td>
+        <td>2016-06-01</td>
+    </tr>
+    <tr>
+        <td>&lt;%= $time('2016-06-01T07:05:36.838Z', ':')%&gt;</td>
+        <td>15:05:37</td>
+    </tr>
+    <tr>
+        <td>&lt;%= $dateTime('2016-06-01T07:05:36.838Z', '-', ':')%&gt;</td>
+        <td>2016-06-01 15:05:37</td>
+    </tr>
+    <tr>
+        <td>&lt;%= $dateTime('2016-06-01T07:05:36.838Z')%&gt;</td>
+        <td>2016年06月01日 15时05分37秒</td>
     </tr>
     <tr>
         <td>&lt;%= $isNull(null)%&gt;</td>
