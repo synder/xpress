@@ -33,6 +33,12 @@ server.get('/', {v:1.0, c: 'ios'}, function(req, res, next){
     });
 });
 
+server.get('/', function(req, res, next){
+    res.json({
+        users: 'synder'
+    });
+});
+
 
 //---------------------------------------------------------
 server.error(404, function (err, req, res, next) {
