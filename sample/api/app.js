@@ -1,8 +1,13 @@
+/**
+ * @author xpress
+ * @date 16/1/10
+ * @desc
+ */
 
-var Xpress = require('Xpress');
+const Xpress = require('Xpress');
 
 //--------------------------------------------------
-var server = new Xpress({
+const server = new Xpress({
     host: null,
     key: null,
     cert: null,
@@ -18,18 +23,15 @@ server.conf('trust proxy', true);
 
 
 //--------------------------------------------------
-var body = require('body-parser');
+const body = require('body-parser');
 
 server.use(body.json());
 server.use(body.urlencoded({extended: true}));
-server.use(function(req, res, next){ next(); });
-
 
 //--------------------------------------------------
-var homeRouter = require('./route/home');
+const homeRouter = require('./route/home');
 
 server.sub('/', homeRouter);
-
 
 //---------------------------------------------------------
 server.error(404, function (err, req, res, next) {
@@ -44,7 +46,6 @@ server.error(500, function (err, req, res, next) {
 server.listen(function(message){
     console.log(message);
 });
-
 
 //--------------------------------------------------
 module.exports = server;

@@ -17,7 +17,7 @@ const Router = require('./Router');
 const template = require('./template');
 const EventEmitter = events.EventEmitter;
 
-var logger = console.log;
+const logger = console.log;
 /**
  * @desc create a Xpress instance
  * @constructor HttpServer

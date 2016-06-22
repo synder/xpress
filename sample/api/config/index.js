@@ -1,16 +1,13 @@
 /**
- * @author synder
+ * @author xpress
  * @date 16/1/10
  * @desc
  */
 
-var path = require('path');
-
-var projectPath = process.cwd();
-
-var privateConfig = require('./' + (process.env.NODE_ENV || 'dev'));
-
-var publicConfig = {
+const path = require('path');
+const projectPath = process.cwd();
+const privateConfig = require('./' + (process.env.NODE_ENV || 'dev'));
+const publicConfig = {
     project:{
         path : projectPath
     },
@@ -25,7 +22,6 @@ var publicConfig = {
         }
     }
 };
-
 
 module.exports = {
     private : privateConfig,

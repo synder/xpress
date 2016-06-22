@@ -1,13 +1,13 @@
 /**
- * @author synder
+ * @author xpress
  * @date 16/1/10
  * @desc
  */
-var Xpress = require('Xpress');
-var config = require('./config');
+const Xpress = require('Xpress');
+const config = require('./config');
 
 //--------------------------------------------------
-var server = new Xpress({
+const server = new Xpress({
     host: null,
     key: null,
     cert: null,
@@ -27,11 +27,11 @@ server.engine('html', Xpress.engine.__express);
 
 
 //--------------------------------------------------
-var body = require('body-parser');
-var cookie = require('cookie-parser');
-var timeout = require('connect-timeout');
-var compression = require("compression");
-var statics = require('express-static');
+const compression = require('compression');
+const body = require('body-parser');
+const cookie = require('cookie-parser');
+const timeout = require('connect-timeout');
+const statics = require('express-static');
 
 server.use(compression());
 server.use(timeout('20s'));
@@ -42,7 +42,7 @@ server.use(statics(config.public.server.statics.path));
 
 
 //--------------------------------------------------
-var homeRouter = require('./route/home');
+const homeRouter = require('./route/home');
 
 server.sub('/', homeRouter);
 

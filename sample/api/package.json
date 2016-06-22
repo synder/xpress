@@ -4,11 +4,11 @@
   "description": "a app create by xpress",
   "scripts": {
     "test": "mocha",
-    "start": "node app.js"
+    "start": "NODE_ENV=dev node app.js"
   },
   "dependencies": {
-    "express": "*",
-    "body-parser":"*"
+    "body-parser":"*",
+    "xpress":"*"
   },
   "devDependencies":{
     "mocha":"*"

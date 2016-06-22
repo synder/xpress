@@ -1,12 +1,12 @@
 /**
- * @author synder
+ * @author xpress
  * @date 16/1/10
  * @desc
  */
 
-var path = require('path');
+const path = require('path');
 
-var projectPath = process.cwd();
+const projectPath = path.join(path.resolve(__dirname), '../../');
 
 module.exports =  {
 
