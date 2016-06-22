@@ -8,7 +8,7 @@
 
 ## Install
 
-   $ npm install xpress
+   $ npm install -g xpress
    
 ## Sample code
 > there are two full sample projects in /sample/api and /sample/web
@@ -23,6 +23,15 @@ node app.js
     
 > open http://127.0.0.1:8001/, there are many template engine(base on artTemplate) view helper sample code
     
+## Create project with commander
+```
+npm install -g xpress
+cd /<project path>
+xpress -p ./ -t (api | web)
+npm install
+npm start
+
+```    
 
 ## APi    
 ### create an api server with xpress
@@ -104,9 +113,9 @@ var parser = Xpress.parser;
 var validate = Xpress.validate;
 productRouter.get('/', function(req, res, next){
     if(validate.isPassword(req.query.pass)){
-        res.json({
-            bankCard: string.bankCard('6666666666666666')    
-        });
+		res.json({
+			bankCard: string.bankCard('6666666666666666')    
+		});
 	}
 })
 //register an api on subRouter with version or channel control  
@@ -142,7 +151,120 @@ server.listen(function(message){
 module.exports = server;
 ```
 ##Integration tools
+### parser
+```javascript
+var parser = require('xpress').parser;
+parser.parseTime('2016-06-22T04:42:07.228Z');
+parser.parseDate('2016-06-22T04:42:07.228Z');
+parser.parseDateTime('2016-06-22T04:42:07.228Z');
+parser.parseInt('122', 100); //122
+parser.parseInt('a122', 100); //100
+parser.parseFloat('a122', 100); //100
+parser.parseBool('a122'); //true
+parser.parseBool('');     //false
+parser.parseJson('{"name":"synder"}', null);     //{name:"synder"}
+parser.parseJson('{"name":"synder}', null);     //null
+```
 
+### fs
+```javascript
+var fs = require('xpress').fs;
+//get dir
+fs.homedir(); //return user home dir
+fs.tmpdir();  //return system temp dir
+//get file name or dir
+fs.filename(path);  //return file name 
+fs.filedir(path);   //return dir name
+//node navtive fs method
+fs.createReadStream();
+fs.createWriteStream();
+fs.chmod();
+fs.chown();
+fs.link();
+fs.unlink();
+fs.utimes();
+fs.stat();
+fs.access();
+fs.watch();
+//fs extend method
+fs.exists(path, callback);
+fs.mkdir(path, [opt], callback);
+fs.list(path, iterator, callback); //list file or dir in path
+fs.walk(path, iterator, callback); //list all file in path and child path
+fs.read(path, callback);
+fs.readline(path, iterator, callback); //read file by line
+fs.save(path, content, [opt], callback);
+fs.append(path, content, [opt], callback);
+fs.touch(path, [opt], callback);
+fs.copy(src, dst, callback);  //copy file or dir
+fs.move(src, dst, callback);  //cur file or dir
+fs.rename(old, newName, callback);
+fs.md5(filepath, callback);
+fs.fetch(webUrl, dst, [filename], callback); //get file from web
+```
+
+### validate
+```javascript
+var validate = require('xpress').validate;
+validate.isNull(str)
+validate.isUndefined(str)
+validate.isNullOrUndefined(str)
+validate.isDate(val)
+validate.isArray(val)
+validate.isString(val)
+validate.isNumber(num)
+validate.isFunction(val)
+validate.isNaN(val)
+validate.isRegExp(val)
+validate.isBool(val)
+validate.isInt(num)
+validate.isFloat(num)
+validate.isObject(obj)
+validate.isDictionary(obj)
+validate.isBuffer(obj)
+validate.isSymbol(str)
+validate.isRequired(str)
+validate.isMobile(str)
+validate.isEmail(str)
+validate.isPassword(str)
+validate.isChinese(str)
+validate.isBankCard(str)
+validate.isChineseIdCard(str)
+validate.isIPV4Address(str)
+```
+
+### string
+```javascript
+var string = require('xpress').string;
+string.date(new Date(), '-')              //2016-04-20
+string.time(new Date(), ':')              //10:03:20
+string.dateTime(new Date(), '-', ':')     //2016-04-20 10:03:20
+string.format('%s name is', 'synder')     //synder name is
+string.pad('12222', 10, '0', 'left')      //'0000012222'
+string.pad('12222', 10, '0', 'right')     //'1222200000'
+string.pad('12222', 10, '0', 'both')      //'0001222200'
+string.unit(10, 'px')                     //10px
+string.mask('18083489462', '*', 4, 5)         //180*****442
+string.join('', null, 10, undefined, 20, '+') //10 + 20
+string.trim('  name  ')        //name
+string.quote("name", '"')      //"name"
+string.clean('my   name  is')  //my name is
+string.lines('my\rname\ris')   //['my', 'name', 'is']
+string.signed(10)    //+10
+string.signed(-10)   //-10
+string.stringify()
+string.truncate('122212313213132132', 13, '...') //1222123132...
+string.capitalize()
+string.upperCase()
+string.lowerCase()
+string.currency(242605401.001, '$', 3)     //$242,605,401.001
+string.chineseCurrency('90002600401.001')  //玖佰亿零贰佰陆拾萬零肆佰零壹
+string.thousands(242605401.001)         //242,605,401.001
+string.bankCard('233546454633344332')   //2335 4645 4633 3443 32
+string.percentage(0.5)                  //50%
+string.percentage(0.5, 2)               //50.00%
+string.number(0.5, 3)                   //0.500
+```
 
 ## View helper(base on [art-template](https://www.npmjs.com/package/art-template))
 <table cellspacing="0" cellpadding="0">
