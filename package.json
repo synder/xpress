@@ -1,6 +1,6 @@
 {
   "name": "xpress",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "description": "a node.js web and api framework base on express which provide api version and channel control",
   "main": "index.js",
   "bin": {
@@ -18,12 +18,6 @@
   "engines": {
     "node": ">= 0.10.0"
   },
-  "files": [
-    "LICENSE",
-    "README.md",
-    "index.js",
-    "lib/"
-  ],
   "devDependencies": {
     "body-parser": "*",
     "mocha": "*"
