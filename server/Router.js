@@ -6,7 +6,7 @@ const route = require('./route');
 const ExpressRouter = express.Router;
 
 const Router = function (config) {
-    this.__trace = config.trace;
+    this.__trace = config ? config.trace : false;
     this.router = new ExpressRouter(config);
     this.__init();
 };

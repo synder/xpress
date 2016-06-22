@@ -11,6 +11,7 @@ const server = new Xpress({
     host: null,
     key: null,
     cert: null,
+    trace: true,
     port: {
         http: 8003,
         https: null
