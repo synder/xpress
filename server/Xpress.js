@@ -4,6 +4,7 @@
  * @version 2.0.11
  * */
 const os = require('os');
+const path = require('path');
 const util = require('util');
 const http = require('http');
 const https = require('https');
@@ -12,12 +13,38 @@ const colors = require('colors');
 const events = require('events');
 const cluster = require('cluster');
 const express = require('express');
+const fs = require('../lib/fs');
+const string = require('../lib/string');
 const route = require('./route');
 const Router = require('./Router');
+const Controller = require('./Controller');
+const validator = require('./validator');
 const template = require('./template');
 const EventEmitter = events.EventEmitter;
 
-const logger = console.log;
+var DEBUG = false;
+
+const logger = function (color, func, method, version, channel, path) {
+    if(DEBUG){
+        var str = colors[color](string.pad('Time:' + Date.now(), 22, ' ', 'right')) + ' '
+            + colors[color](string.pad(func, 10, ' ', 'right')) + ' '
+            + colors[color](string.pad(method, 6, ' ', 'right'));
+
+        if(version){
+            str += ' ' + colors[color]('version:' + string.pad(version, 5, ' ', 'right'));
+        }
+
+        if(channel){
+            str += ' ' + colors[color]('channel:' + string.pad(channel, 5, ' ', 'right'));
+        }
+
+        if(path){
+            str += ' ' + colors[color](path);
+        }
+
+        console.log(str);
+    }
+};
 /**
  * @desc create a Xpress instance
  * @constructor HttpServer
@@ -39,9 +66,13 @@ var Xpress = function (options) {
 
     EventEmitter.call(this);
 
+    DEBUG = options.debug || false;
+
     var self = this;
 
     this.__host = options.host || null;
+
+    this.__route = options.route;
 
     this.__key = options.key;
 
@@ -65,13 +96,14 @@ var Xpress = function (options) {
             var err = new Error('resource not found:' + req.originalUrl);
             err.code = 404;
             if(self.__trace){
-                logger(colors.red('NOT FOUND: %s {v:%s, c:%s} %s'), req.method, req.version, req.channel, req.originalUrl);
+                logger('yellow', '404:', req.method, req.version, req.channel, req.originalUrl);
             }
             res.status(err.code).send('resource not found');
         },
         '500': function (err, req, res) {
             err.code = err.code || 500;
             if(self.__trace){
+                logger('red', '500:', req.method, req.version, req.channel, req.originalUrl);
                 console.error(err.stack);
             }
             res.status(err.code).send(err.message);
@@ -154,7 +186,7 @@ Xpress.prototype.__parser = function () {
 
     if(self.__trace){
         self.application.use(function (req, res, next) {
-            logger(colors.green('REQUEST URL: %s {v:%s, c:%s}  %s'), req.method, req.version, req.channel, req.originalUrl);
+            logger('green', 'Request:', req.method, req.version, req.channel, req.originalUrl);
             next();
         });
     }
@@ -212,7 +244,6 @@ Xpress.prototype.use = function (fn) {
     this.application.use.apply(this.application, arguments);
 };
 
-
 /**
  * @desc register a sub router
  * */
@@ -251,18 +282,106 @@ Xpress.prototype.error = function (code, fn) {
             var err = new Error('resource not found:' + req.originalUrl);
             err.code = 404;
             if(self.__trace){
-                logger(colors.red('NOT FOUND ROUTE: %s {v:%s, c:%s} %s'), req.method, req.version, req.channel, req.originalUrl);
-            }
+                logger('yellow', 'No Route:', req.method, req.version, req.channel, req.originalUrl);
+             }
             fn(err, req, res, next);
         };
     } else {
         this.__errorHandler[500] = function (err, req, res, next) {
             err.code = err.code || 500;
             if(self.__trace){
+                logger('red', '500:', req.method, req.version, req.channel, req.originalUrl);
                 console.error(err.stack);
             }
             fn(err, req, res, next);
         };
+    }
+};
+
+
+Xpress.prototype.__autoRoute = function (callback) {
+    var self = this;
+
+    if(self.__route && self.__route.auto){
+        if(!self.__route.controller){
+            throw new Error('auto route need controller path');
+        }
+
+        fs.walk(self.__route.controller, function (pth, file, next) {
+            var filepath = path.join(pth, file);
+            var pathname = path.relative(self.__route.controller, pth).split(path.sep).join('/');
+            var filename = path.basename(filepath, path.extname(filepath));
+            var module = require(filepath);
+
+            for(var key in module){
+
+                var action = module[key];
+
+                if(!action instanceof  Controller){
+                    return console.warn(filepath + ':' + key + 'is not a auto register route');
+                }
+
+                if(!action.__handler){
+                    throw new Error('controller has no handler');
+                }
+
+                var routePath = path.join('/', pathname, filename, key);
+
+                var validateFunction = {
+                    header: function () {
+                        return null;
+                    },
+                    query: function () {
+                        return null;
+                    },
+                    body: function () {
+                        return null;
+                    }
+                };
+
+                if(action.__validate){
+                    if(action.__validate.header){
+                        validateFunction.header = validator.validateFunction('header', action.__validate.header);
+                    }
+                    if(action.__validate.query){
+                        validateFunction.query = validator.validateFunction('query', action.__validate.query);
+                    }
+                    if(action.__validate.body){
+                        validateFunction.body = validator.validateFunction('body', action.__validate.body);
+                    }
+                }
+
+                var handler = function (req, res, next) {
+
+                    var verifyHeaderMsg = validateFunction.header(req.headers);
+
+                    if(verifyHeaderMsg){
+                        return res.json(verifyHeaderMsg);
+                    }
+
+                    var verifyQueryMsg = validateFunction.query(req.query);
+
+                    if(verifyQueryMsg){
+                        return res.json(verifyQueryMsg);
+                    }
+
+                    var verifyBodyMsg = validateFunction.body(req.body);
+
+                    if(verifyBodyMsg){
+                        return res.json(verifyBodyMsg);
+                    }
+
+                    action.__handler(req, res, next);
+                };
+
+                logger('green', 'Register:', action.__method, action.__version, action.__channel, routePath);
+
+                self[action.__method](routePath, {v: action.__version, c: action.__channel}, handler);
+            }
+            next();
+        }, callback);
+    }else{
+        callback && callback();
     }
 };
 
@@ -279,80 +398,83 @@ Xpress.prototype.listen = function (callback) {
 
     var self = this;
 
-    if (!self.__port.http && !self.__port.https) {
-        throw new Error('port.http or port.https is not set');
-    }
+    self.__autoRoute(function () {
+        if (!self.__port.http && !self.__port.https) {
+            throw new Error('port.http or port.https is not set');
+        }
 
-    //register a default error handler
-    self.application.use(self.__errorHandler[404]);
-    self.application.use(self.__errorHandler[500]);
+        //register a default error handler
+        self.application.use(self.__errorHandler[404]);
+        self.application.use(self.__errorHandler[500]);
 
-    var listenMessage = '';
-    var flag = 0;
-    var count = 0;
+        var listenMessage = '';
+        var flag = 0;
+        var count = 0;
 
-    if (self.__port.http) {
-        count++;
-    }
+        if (self.__port.http) {
+            count++;
+        }
 
-    if (self.__port.https) {
-        count++;
-    }
+        if (self.__port.https) {
+            count++;
+        }
 
-    if (self.__port.http) {
+        if (self.__port.http) {
 
-        self.httpServer.listen(self.__port.http, self.__host, function (err) {
+            self.httpServer.listen(self.__port.http, self.__host, function (err) {
 
-            flag++;
+                flag++;
 
-            if (err) {
-                listenMessage += err.message;
-            }
+                if (err) {
+                    listenMessage += err.message;
+                }
 
-            var host = self.__host || '127.0.0.1';
+                var host = self.__host || '127.0.0.1';
 
-            listenMessage += 'server listen on : http://' +
-                host +
-                ':' +
-                self.__port.http +
-                ', pid : ' +
-                process.pid;
+                listenMessage += 'server listen on : http://' +
+                    host +
+                    ':' +
+                    self.__port.http +
+                    ', pid : ' +
+                    process.pid;
 
-            if (flag >= count) {
-                self.emit('listen', self.__port.http);
-                callback && callback(listenMessage);
-            }
-        });
+                if (flag >= count) {
+                    self.emit('listen', self.__port.http);
+                    callback && callback(listenMessage);
+                }
+            });
 
-    }
+        }
 
-    if (self.__port.https) {
+        if (self.__port.https) {
 
-        self.httpsServer.listen(self.__port.https, self.__host, function (err) {
+            self.httpsServer.listen(self.__port.https, self.__host, function (err) {
 
-            flag++;
+                flag++;
 
-            if (err) {
-                listenMessage += err.message;
-            }
+                if (err) {
+                    listenMessage += err.message;
+                }
 
-            var host = self.__host || '127.0.0.1';
+                var host = self.__host || '127.0.0.1';
 
-            listenMessage += '\nserver listen on : https://' +
-                host +
-                ':' +
-                self.__port.https +
-                ', pid : ' +
-                process.pid;
+                listenMessage += '\nserver listen on : https://' +
+                    host +
+                    ':' +
+                    self.__port.https +
+                    ', pid : ' +
+                    process.pid;
 
-            if (flag >= count) {
-                self.emit('listen', self.__port.https);
-                callback && callback(listenMessage);
-            }
+                if (flag >= count) {
+                    self.emit('listen', self.__port.https);
+                    callback && callback(listenMessage);
+                }
 
-        });
+            });
 
-    }
+        }
+    });
+
 };
 
 

@@ -4,6 +4,7 @@
 
 const Xpress = require('./server/Xpress');
 const Router = require('./server/Router');
+const Controller = require('./server/Controller');
 
 const parser = require('./lib/parser');
 const string = require('./lib/string');
@@ -12,6 +13,7 @@ const fs = require('./lib/fs');
 
 module.exports = Xpress;
 module.exports.Router = Router;
+module.exports.Controller = Controller;
 
 module.exports.fs = fs;
 module.exports.parser = parser;

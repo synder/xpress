@@ -3,8 +3,27 @@
  */
 const colors = require('colors');
 var METHODS = require('./method');
+const string = require('../lib/string');
 
-const logger = console.log;
+const logger = function (color, func, method, version, channel, path) {
+    var str = colors[color](string.pad('Time:' + Date.now(), 22, ' ', 'right')) + ' '
+        + colors[color](string.pad(func, 10, ' ', 'right')) + ' '
+        + colors[color](string.pad(method, 6, ' ', 'right'));
+
+    if(version){
+        str += ' ' + colors[color]('version:' + string.pad(version, 5, ' ', 'right'));
+    }
+
+    if(channel){
+        str += ' '+ colors[color]('channel:' + string.pad(channel, 5, ' ', 'right'));
+    }
+
+    if(path){
+        str += ' ' + colors[color](path);
+    }
+
+    console.log(str);
+};
 
 /**
  * @desc show warn info
@@ -28,7 +47,7 @@ const wraper = function (option, handler, trace) {
         if (option.v) {
             if (req.version != option.v) {
                 if(trace){
-                    logger(colors.yellow('SKIP ROUTE: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
+                    logger('yellow', 'Skip:', req.method, option.v, option.c, req.route.path);
                 }
                 return next();
             }
@@ -37,14 +56,14 @@ const wraper = function (option, handler, trace) {
         if (option.c) {
             if (req.channel != option.c) {
                 if(trace){
-                    logger(colors.yellow('SKIP ROUTE: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
+                    logger('yellow', 'Skip:', req.method, option.v, option.c, req.route.path);
                 }
                 return next();
             }
         }
 
         if(trace){
-            logger(colors.green('MATCH ROUTE: %s {v:%s, c:%s} %s'), req.method, option.v, option.c, req.route.path);
+            logger('green', 'Match:', req.method, option.v, option.c, req.route.path);
         }
 
         handler(req, res, next);

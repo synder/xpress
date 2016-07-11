@@ -3,8 +3,9 @@
  * @date 16/1/10
  * @desc
  */
-
-const Xpress = require('Xpress');
+const path = require('path');
+const Xpress = require('../../index');
+global.Controller = Xpress.Controller;
 
 //--------------------------------------------------
 const server = new Xpress({
@@ -12,9 +13,14 @@ const server = new Xpress({
     key: null,
     cert: null,
     trace: true,
+    debug: true,
     port: {
         http: 8003,
         https: null
+    },
+    route: {
+        auto: true,
+        controller: path.join(__dirname, 'controller')
     }
 });
 
