@@ -299,7 +299,7 @@ Xpress.prototype.error = function (code, fn) {
 };
 
 
-Xpress.prototype.__autoRoute = function (callback) {
+Xpress.prototype.__routing = function (callback) {
     var self = this;
 
     if(self.__route && self.__route.auto){
@@ -325,7 +325,11 @@ Xpress.prototype.__autoRoute = function (callback) {
                     throw new Error('controller has no handler');
                 }
 
-                var routePath = path.join('/', pathname, filename, key);
+                if(!action.__action){
+                    throw new Error('controller has no action');
+                }
+
+                var routePath = action.__path || path.join('/', pathname, filename, action.__action);
 
                 var validateFunction = {
                     header: function () {
@@ -356,19 +360,32 @@ Xpress.prototype.__autoRoute = function (callback) {
                     var verifyHeaderMsg = validateFunction.header(req.headers);
 
                     if(verifyHeaderMsg){
-                        return res.json(verifyHeaderMsg);
+                        if(req.xhr){
+                            return res.status(400).json(verifyHeaderMsg);
+                        }else{
+                            return res.status(400).send(verifyHeaderMsg);
+                        }
                     }
 
                     var verifyQueryMsg = validateFunction.query(req.query);
 
                     if(verifyQueryMsg){
-                        return res.json(verifyQueryMsg);
+                        if(req.xhr){
+                            return res.status(400).json(verifyQueryMsg);
+                        }else{
+                            return res.status(400).send(verifyQueryMsg);
+                        }
+
                     }
 
                     var verifyBodyMsg = validateFunction.body(req.body);
 
                     if(verifyBodyMsg){
-                        return res.json(verifyBodyMsg);
+                        if(req.xhr){
+                            return res.status(400).json(verifyBodyMsg);
+                        }else{
+                            return res.status(400).send(verifyBodyMsg);
+                        }
                     }
 
                     action.__handler(req, res, next);
@@ -398,7 +415,7 @@ Xpress.prototype.listen = function (callback) {
 
     var self = this;
 
-    self.__autoRoute(function () {
+    self.__routing(function () {
         if (!self.__port.http && !self.__port.https) {
             throw new Error('port.http or port.https is not set');
         }

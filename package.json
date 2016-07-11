@@ -22,7 +22,8 @@
   },
   "devDependencies": {
     "body-parser": "*",
-    "mocha": "*"
+    "mocha": "*",
+    "jsdoc": "*"
   },
   "repository": {
     "type": "git",

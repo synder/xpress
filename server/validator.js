@@ -35,40 +35,40 @@ const DATA_TYPES = {
     NUMBER: 'number'
 };
 
-var verify = function (type, key, value, rule) {
+var verify = function (attr, type, key, value, rule) {
 
     if(rule.gt){
         if(!(value > rule.gt)){
-            return type + ':' + key + '.value:' + value + ' is not gt ' + rule.gt;
+            return type + '.' + key + '.' + attr + ' == ' + value + ' is not gt ' + rule.gt;
         }
     }
 
     if(rule.gte){
         if(value < rule.gte){
-            return type + ':' + key + '.value:' + value + ' is not gte ' + rule.gte;
+            return type + '.' + key + '.' + attr + ' == ' + value + ' is not gte ' + rule.gte;
         }
     }
 
     if(rule.lt){
         if(!(value < rule.lt)){
-            return type + ':' + key + '.value:' + value + ' is not lt ' + rule.lt;
+            return type + '.' + key + '.' + attr + ' == ' + value + ' is not lt ' + rule.lt;
         }
     }
 
     if(rule.lte){
         if(value > rule.lte){
-            return type + ':' + key + '.value:' + value + ' is not lte ' + rule.lte;
+            return type + '.' + key + '.' + attr + ' == ' + value + ' is not lte ' + rule.lte;
         }
     }
 
     if(rule.eq){
         if(Array.isArray(value) && Array.isArray(rule.eq)){
             if(value.sort().toString() !== rule.eq.sort().toString()){
-                return type + ':' + key + '.value:' + JSON.stringify(value) + ' is not eq ' + JSON.stringify(rule.eq);
+                return type + '.' + key + '.' + attr + ' == ' + JSON.stringify(value) + ' is not eq ' + JSON.stringify(rule.eq);
             }
         }else{
             if(value !== rule.eq){
-                return type + ':' + key + '.value:' + value + ' is not eq ' + rule.eq;
+                return type + '.' + key + '.' + attr + ' == ' + value + ' is not eq ' + rule.eq;
             }
         }
     }
@@ -76,30 +76,30 @@ var verify = function (type, key, value, rule) {
     if(rule.neq){
         if(Array.isArray(value) && Array.isArray(rule.neq)){
             if(value.sort().toString() === rule.neq.sort().toString()){
-                return type + ':' + key + '.value:' + JSON.stringify(value) + ' is not neq ' + JSON.stringify(rule.neq);
+                return type + '.' + key + '.' + attr + ' == ' + JSON.stringify(value) + ' is not neq ' + JSON.stringify(rule.neq);
             }
         }else{
             if(value === rule.eq){
-                return type + ':' + key + '.value:' + value + ' is not neq ' + rule.neq;
+                return type + '.' + key + '.' + attr + ' == ' + value + ' is not neq ' + rule.neq;
             }
         }
     }
 
     if(Array.isArray(rule.in)){
         if(!rule.in.includes(value)){
-            return type + ':' + key + '.value:' + value + ' is not in ' + JSON.stringify(rule.in);
+            return type + '.' + key + '.' + attr + ' == ' + value + ' is not in ' + JSON.stringify(rule.in);
         }
     }
 
     if(Array.isArray(rule.nin)){
         if(rule.nin.includes(value)){
-            return type + ':' + key + '.value:' + value + ' is not nin ' + JSON.stringify(rule.nin);
+            return type + '.' + key + '.value == ' + value + ' is not nin ' + JSON.stringify(rule.nin);
         }
     }
 
     if(rule.like){
-        if(!value.test(rule.like)){
-            return type + ':' + key + '.value:' + value + ' is not like ' + rule.like.toString();
+        if(!rule.like.test(value)){
+            return type + '.' + key + '.' + attr + ' == ' + value + ' is not like ' + rule.like.toString();
         }
     }
 
@@ -115,7 +115,7 @@ var validateFunction = function (type, conditions) {
 
             if(rule.required == true){
                 if(!value){
-                    return type + ':' + key + ' is required';
+                    return type + '.' + key + ' is required';
                 }
             }
 
@@ -123,52 +123,52 @@ var validateFunction = function (type, conditions) {
                 switch (rule.type){
                     case DATA_TYPES.IP: {
                         if(!validator.isIPAddress(value)){
-                            return type + ':' + key + ' is not ip';
+                            return type + '.' + key + ' is not ip';
                         }
                     } break;
                     case DATA_TYPES.URL: {
                         if(!validator.isUrl(value)){
-                            return type + ':' + key + ' is not url';
+                            return type + '.' + key + ' is not url';
                         }
                     } break;
                     case DATA_TYPES.EMAIL: {
                         if(!validator.isEmail(value)){
-                            return type + ':' + key + ' is not email';
+                            return type + '.' + key + ' is not email';
                         }
                     } break;
                     case DATA_TYPES.BOOL: {
                         if(!validator.isBool(value)){
-                            return type + ':' + key + ' is not bool';
+                            return type + '.' + key + ' is not bool';
                         }
                     } break;
                     case DATA_TYPES.STRING: {
                         if(!validator.isString(value)){
-                            return type + ':' + key + ' is not string';
+                            return type + '.' + key + ' is not string';
                         }
                     } break;
                     case DATA_TYPES.ARRAY: {
                         if(!validator.isArray(value)){
-                            return type + ':' + key + ' is not string';
+                            return type + '.' + key + ' is not string';
                         }
                     } break;
                     case DATA_TYPES.DATE: {
                         if(!validator.isDate(value)){
-                            return type + ':' + key + ' is not date';
+                            return type + '.' + key + ' is not date';
                         }
                     } break;
                     case DATA_TYPES.FLOAT: {
                         if(!validator.isFloat(value)){
-                            return type + ':' + key + ' is not float';
+                            return type + '.' + key + ' is not float';
                         }
                     } break;
                     case DATA_TYPES.INTEGER: {
                         if(!validator.isInt(value)){
-                            return type + ':' + key + ' is not integer';
+                            return type + '.' + key + ' is not integer';
                         }
                     } break;
                     case DATA_TYPES.NUMBER: {
                         if(!validator.isNumber(value)){
-                            return type + ':' + key + ' is not number';
+                            return type + '.' + key + ' is not number';
                         }
                     } break;
                     default: throw new Error(rule.type + ' is not support');
@@ -176,14 +176,14 @@ var validateFunction = function (type, conditions) {
             }
 
             if(rule.len){
-                var lenVerifyMsg = verify(type, key, value.length, rule.len);
+                var lenVerifyMsg = verify('length', type, key, value.length, rule.len);
                 if(lenVerifyMsg){
                     return rule.msg || lenVerifyMsg;
                 }
             }
 
             if(rule.val){
-                var valVerifyMsg = verify(type, key, value, rule.val);
+                var valVerifyMsg = verify('value', type, key, value, rule.val);
                 if(valVerifyMsg){
                     return rule.msg || valVerifyMsg;
                 }
