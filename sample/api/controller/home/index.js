@@ -4,8 +4,11 @@
  * @desc
  */
 
-exports.indexPost = Controller.action('index')
+
+Controller.action(exports, 'index')
     .post()
+    .path('/')
+    .desc()
     .validate({
         body: {
             username: {type: 'string', required: true, len: {gt: 2, lt: 20}, val: {like: ''}},
@@ -28,8 +31,13 @@ exports.indexPost = Controller.action('index')
         });
     });
 
-exports.indexGet = Controller.action('index')
+
+
+Controller.action(exports, 'index')
     .get()
+    .path('/')
+    .version(1)
+    .channel(2)
     .validate({
         query: {
             token: {type: 'string', required: true, len: {gt: 2, lt: 20}, val: {like: /name/}}
@@ -46,7 +54,7 @@ exports.indexGet = Controller.action('index')
     });
 
 
-exports.indexPut = Controller.action('index')
+Controller.action(exports, 'index')
     .put()
     .validate({
         query: {
@@ -63,7 +71,9 @@ exports.indexPut = Controller.action('index')
         });
     });
 
-exports.indexDelete = Controller.action('index')
+
+
+Controller.action(exports, 'index')
     .delete()
     .validate({
         query: {
@@ -79,3 +89,8 @@ exports.indexDelete = Controller.action('index')
             }
         });
     });
+
+
+exports.name = function () {
+    
+};

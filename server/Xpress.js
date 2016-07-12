@@ -317,12 +317,17 @@ Xpress.prototype.__routing = function (callback) {
 
                 var action = module[key];
 
-                if(!action instanceof  Controller){
-                    return console.warn(filepath + ':' + key + 'is not a auto register route');
+                if(!(action instanceof  Controller)){
+                    logger('yellow', filepath + '->' + key + ' is not a auto register route');
+                    continue;
                 }
 
                 if(!action.__handler){
                     throw new Error('controller has no handler');
+                }
+
+                if(typeof action.__handler !== 'function'){
+                    throw new Error('controller handler is not function');
                 }
 
                 if(!action.__action){
@@ -355,46 +360,48 @@ Xpress.prototype.__routing = function (callback) {
                     }
                 }
 
-                var handler = function (req, res, next) {
+                var handler = function (action, validateFunction) {
+                    return function (req, res, next) {
+                        var verifyHeaderMsg = validateFunction.header(req.headers);
 
-                    var verifyHeaderMsg = validateFunction.header(req.headers);
-
-                    if(verifyHeaderMsg){
-                        if(req.xhr){
-                            return res.status(400).json(verifyHeaderMsg);
-                        }else{
-                            return res.status(400).send(verifyHeaderMsg);
-                        }
-                    }
-
-                    var verifyQueryMsg = validateFunction.query(req.query);
-
-                    if(verifyQueryMsg){
-                        if(req.xhr){
-                            return res.status(400).json(verifyQueryMsg);
-                        }else{
-                            return res.status(400).send(verifyQueryMsg);
+                        if(verifyHeaderMsg){
+                            if(req.xhr){
+                                return res.status(400).json(verifyHeaderMsg);
+                            }else{
+                                return res.status(400).send(verifyHeaderMsg);
+                            }
                         }
 
-                    }
+                        var verifyQueryMsg = validateFunction.query(req.query);
 
-                    var verifyBodyMsg = validateFunction.body(req.body);
+                        if(verifyQueryMsg){
+                            if(req.xhr){
+                                return res.status(400).json(verifyQueryMsg);
+                            }else{
+                                return res.status(400).send(verifyQueryMsg);
+                            }
 
-                    if(verifyBodyMsg){
-                        if(req.xhr){
-                            return res.status(400).json(verifyBodyMsg);
-                        }else{
-                            return res.status(400).send(verifyBodyMsg);
                         }
-                    }
 
-                    action.__handler(req, res, next);
+                        var verifyBodyMsg = validateFunction.body(req.body);
+
+                        if(verifyBodyMsg){
+                            if(req.xhr){
+                                return res.status(400).json(verifyBodyMsg);
+                            }else{
+                                return res.status(400).send(verifyBodyMsg);
+                            }
+                        }
+
+                        action.__handler(req, res, next);
+                    };
                 };
 
                 logger('green', 'Register:', action.__method, action.__version, action.__channel, routePath);
 
-                self[action.__method](routePath, {v: action.__version, c: action.__channel}, handler);
+                self[action.__method](routePath, {v: action.__version, c: action.__channel}, handler(action, validateFunction));
             }
+
             next();
         }, callback);
     }else{

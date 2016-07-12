@@ -9,10 +9,11 @@
   "dependencies": {
     "body-parser":"*",
     "xpress":"*",
-    "lodash":"*"
+    "lodash":"*",
+    "dox":"*"
   },
   "devDependencies":{
-    "mocha":"*"
+    "dox":"*"
   },
   "author": "",
   "license": "ISC"

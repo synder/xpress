@@ -175,23 +175,28 @@ var validateFunction = function (type, conditions) {
                 }
             }
 
-            if(rule.len){
-                var lenVerifyMsg = verify('length', type, key, value.length, rule.len);
-                if(lenVerifyMsg){
-                    return rule.msg || lenVerifyMsg;
+            if(typeof rule.validator == 'function'){
+                if(!rule.validator(value)){
+                    return rule.msg || type + '.' + key + ' is validate failed';
                 }
-            }
+            }else{
+                if(rule.len){
+                    var lenVerifyMsg = verify('length', type, key, value.length, rule.len);
+                    if(lenVerifyMsg){
+                        return rule.msg || lenVerifyMsg;
+                    }
+                }
 
-            if(rule.val){
-                var valVerifyMsg = verify('value', type, key, value, rule.val);
-                if(valVerifyMsg){
-                    return rule.msg || valVerifyMsg;
+                if(rule.val){
+                    var valVerifyMsg = verify('value', type, key, value, rule.val);
+                    if(valVerifyMsg){
+                        return rule.msg || valVerifyMsg;
+                    }
                 }
             }
         }
         return null;
     };
-
 
 };
 

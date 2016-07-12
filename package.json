@@ -15,7 +15,8 @@
     "debug": "^2.2.0",
     "express": "^4.0.0",
     "request":"*",
-    "lodash":"*"
+    "lodash":"*",
+    "dox":"*"
   },
   "engines": {
     "node": ">= 0.12.0"
