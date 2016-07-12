@@ -13,10 +13,17 @@ var Controller = function (exports, action) {
     this.__handler = null;
     this.__summary = summary;
     this.__desc= null;
+    this.__group= null;
 };
+
 
 Controller.action = function (exports, action) {
     return new Controller(exports, action);
+};
+
+Controller.prototype.group = function (group) {
+    this.__group = group;
+    return this;
 };
 
 Controller.prototype.path = function (p) {

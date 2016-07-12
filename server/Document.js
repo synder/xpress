@@ -39,7 +39,7 @@ var validate = {
     }
 };
 
-var genDocWithValidate = function (rule) {
+var genCommentWithValidate = function (rule) {
 
     var comment = new Comment();
 
@@ -75,7 +75,7 @@ var genDocWithValidate = function (rule) {
     return comment.end();
 };
 
-console.log(genDocWithValidate(validate.body));
+console.log(genCommentWithValidate(validate.body));
 
 
 var code = `
@@ -108,7 +108,7 @@ var code = `
  */
 `;
 
-var obj = dox.parseComments(genDocWithValidate(validate.body));
+var obj = dox.parseComments(genCommentWithValidate(validate.body));
 
 console.log(obj[0].tags);
 //console.log(obj);
