@@ -5,8 +5,7 @@
  */
 
 
-Controller.action(exports, 'index')
-    .post()
+Controller.action(exports, 'index').post()
     .path('/')
     .desc()
     .validate({
@@ -33,8 +32,7 @@ Controller.action(exports, 'index')
 
 
 
-Controller.action(exports, 'index')
-    .get()
+Controller.action(exports, 'index').get()
     .path('/')
     .version(1)
     .channel(2)
@@ -54,8 +52,7 @@ Controller.action(exports, 'index')
     });
 
 
-Controller.action(exports, 'index')
-    .put()
+Controller.action(exports, 'index').put()
     .validate({
         query: {
             token: {type: 'string', required: true, len: {gt: 2, lt: 20}, val: {like: /name/}}
@@ -73,8 +70,7 @@ Controller.action(exports, 'index')
 
 
 
-Controller.action(exports, 'index')
-    .delete()
+Controller.action(exports, 'index').delete()
     .validate({
         query: {
             token: {type: 'string', required: true, len: {gt: 2, lt: 20}, val: {like: /name/}}
