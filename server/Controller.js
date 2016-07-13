@@ -11,23 +11,22 @@ var Controller = function (exports, action) {
     this.__channel = null;
     this.__validate = null;
     this.__handler = null;
-    this.__summary = summary;
+    this.__name = null;
     this.__desc= null;
-    this.__group= null;
+    this.__author = null;
 };
-
 
 Controller.action = function (exports, action) {
     return new Controller(exports, action);
 };
 
-Controller.prototype.group = function (group) {
-    this.__group = group;
+Controller.prototype.path = function (p) {
+    this.__path = p;
     return this;
 };
 
-Controller.prototype.path = function (p) {
-    this.__path = p;
+Controller.prototype.author = function (a) {
+    this.__author = a;
     return this;
 };
 
@@ -41,8 +40,8 @@ Controller.prototype.channel = function (c) {
     return this;
 };
 
-Controller.prototype.summary = function (summary) {
-    this.__summary = summary;
+Controller.prototype.name = function (name) {
+    this.__name = name;
     return this;
 };
 
