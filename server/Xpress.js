@@ -20,6 +20,7 @@ const Router = require('./Router');
 const Controller = require('./Controller');
 const validator = require('./validator');
 const template = require('./template');
+const document = require('./document');
 const EventEmitter = events.EventEmitter;
 
 var DEBUG = false;
@@ -45,6 +46,8 @@ const logger = function (color, func, method, version, channel, path) {
         console.log(str);
     }
 };
+
+
 /**
  * @desc create a Xpress instance
  * @constructor HttpServer
@@ -73,6 +76,8 @@ var Xpress = function (options) {
     this.__host = options.host || null;
 
     this.__route = options.route;
+
+    this.__doc = options.doc;// the doc save path
 
     this.__key = options.key;
 
@@ -129,6 +134,7 @@ var Xpress = function (options) {
 
 };
 
+
 util.inherits(Xpress, EventEmitter);
 
 
@@ -145,6 +151,231 @@ Xpress.defaults = {
  * @desc template engine base on art-template
  * */
 Xpress.engine = template.engine;
+
+
+/**
+ * @desc save doc to disk when need
+ * */
+Xpress.prototype.__document = function (type, moduleName, controllerName, actionName, obj, callback) {
+
+    var self = this;
+
+    if(!obj){
+        return callback && callback();
+    }
+
+    var docStr = JSON.stringify(obj);
+
+    var moduleDocSavePath = path.join(path.join(self.__doc, 'raw'), moduleName, controllerName);
+
+    fs.mkdir(moduleDocSavePath, function (err) {
+        if(err){
+            return logger('red', err.message);
+        }
+        var filename = actionName;
+        if(type == 'action'){
+            filename = filename + '-[ACTION]';
+        }else if(type == 'response'){
+            filename = filename + '-[RESPONSE]';
+        }else{
+            filename = filename + '-[EXAMPLE]';
+        }
+
+        filename += '.json';
+
+        var filepath = path.join(moduleDocSavePath, filename);
+
+        fs.save(filepath, docStr, callback);
+
+    });
+};
+
+
+/**
+ * @desc auto route
+ * */
+Xpress.prototype.__routing = function (callback) {
+    var self = this;
+
+    if(self.__route && self.__route.auto){
+        if(!self.__route.controller){
+            throw new Error('auto route need controller path');
+        }
+
+        fs.walk(self.__route.controller, function (pth, file, next) {
+            var filepath = path.join(pth, file);
+            var pathname = path.relative(self.__route.controller, pth).split(path.sep).join('/');
+            var filename = path.basename(filepath, path.extname(filepath));
+            var module = require(filepath);
+
+            for(var key in module){
+
+                var action = module[key];
+
+                if(!(action instanceof  Controller)){
+                    logger('yellow', filepath + '->' + key + ' is not a auto register route');
+                    continue;
+                }
+
+                var moduleName = pathname;
+                var controllerName = filename;
+                var actionName = key;
+                var routePath = action.__path || path.join('/', pathname, filename, action.__action);
+
+                //gen doc obj and save on disk
+                if(self.__doc){
+                    var docObj = document.genDocObjWithController(action, routePath);
+                    self.__document('action', moduleName, controllerName, actionName, docObj);
+                }
+
+                if(action.__deprecated){
+                    continue
+                }
+
+                if(!action.__handler){
+                    throw new Error('controller has no handler');
+                }
+
+                if(typeof action.__handler !== 'function'){
+                    throw new Error('controller handler is not function');
+                }
+
+                if(!action.__action){
+                    throw new Error('controller has no action');
+                }
+
+                var validateFunction = {
+                    header: function () {
+                        return null;
+                    },
+                    param: function () {
+                        return null;
+                    },
+                    query: function () {
+                        return null;
+                    },
+                    body: function () {
+                        return null;
+                    }
+                };
+
+                if(action.__validate){
+                    if(action.__validate.header){
+                        validateFunction.header = validator.validateFunction('header', action.__validate.header);
+                    }
+
+                    if(action.__validate.param){
+                        validateFunction.param = validator.validateFunction('param', action.__validate.param);
+                    }
+
+                    if(action.__validate.query){
+                        validateFunction.query = validator.validateFunction('query', action.__validate.query);
+                    }
+
+                    if(action.__validate.body){
+                        validateFunction.body = validator.validateFunction('body', action.__validate.body);
+                    }
+                }
+
+                var handler = function (moduleName, controllerName, actionName, action, validateFunction) {
+                    return function (req, res, next) {
+                        var verifyHeaderMsg = validateFunction.header(req.headers);
+
+                        if(verifyHeaderMsg){
+                            if(req.xhr){
+                                return res.status(400).json(verifyHeaderMsg);
+                            }else{
+                                return res.status(400).send(verifyHeaderMsg);
+                            }
+                        }
+
+                        var verifyParamMsg = validateFunction.param(req.query);
+
+                        if(verifyParamMsg){
+                            if(req.xhr){
+                                return res.status(400).json(verifyParamMsg);
+                            }else{
+                                return res.status(400).send(verifyParamMsg);
+                            }
+
+                        }
+
+                        var verifyQueryMsg = validateFunction.query(req.query);
+
+                        if(verifyQueryMsg){
+                            if(req.xhr){
+                                return res.status(400).json(verifyQueryMsg);
+                            }else{
+                                return res.status(400).send(verifyQueryMsg);
+                            }
+
+                        }
+
+                        var verifyBodyMsg = validateFunction.body(req.body);
+
+                        if(verifyBodyMsg){
+                            if(req.xhr){
+                                return res.status(400).json(verifyBodyMsg);
+                            }else{
+                                return res.status(400).send(verifyBodyMsg);
+                            }
+                        }
+
+                        if(self.__doc){
+                            //记录请求和响应
+                            var oldSendFunction = res.send;
+
+                            res.send = function(){
+
+                                var body = null;
+
+                                try{
+                                    body = arguments.length > 0 ? JSON.parse(arguments[0]) : null;
+                                }catch (ex){
+                                    body = arguments.length > 0 ? arguments[0] : null;
+                                }
+
+                                self.__document('response', moduleName, controllerName, actionName, {
+                                    headers: res.headers,
+                                    body: body
+                                });
+
+                                self.__document('example', moduleName, controllerName, actionName, {
+                                    request: {
+                                        url: req.originalUrl,
+                                        headers: req.headers,
+                                        query: req.query,
+                                        param: req.params,
+                                        body: req.body
+                                    },
+                                    response: {
+                                        body: body
+                                    }
+                                });
+
+                                return oldSendFunction.apply(res, arguments);
+                            };
+                        }
+
+                        action.__handler(req, res, next);
+                    };
+                };
+
+                logger('green', 'Register:', action.__method, action.__version, action.__channel, routePath);
+
+                self[action.__method](
+                    routePath,
+                    {v: action.__version, c: action.__channel},
+                    handler(moduleName, controllerName, actionName, action, validateFunction)
+                );
+            }
+
+            next();
+        }, callback);
+    }else{
+        callback && callback();
+    }
+};
 
 
 /**
@@ -171,6 +402,7 @@ Xpress.prototype.__server = function () {
     }
 };
 
+
 /**
  * @desc add version parser
  * */
@@ -192,12 +424,14 @@ Xpress.prototype.__parser = function () {
     }
 };
 
+
 /**
  * @desc wraper http method
  * */
 Xpress.prototype.__method = function () {
     route.method(Xpress, this, this.application, this.__trace);
 };
+
 
 /**
  * @desc init
@@ -222,12 +456,14 @@ Xpress.prototype.conf = function () {
     this.application.set.apply(this.application, arguments);
 };
 
+
 /**
  * @desc set template engine on express
  * */
 Xpress.prototype.engine = function () {
     this.application.engine.apply(this.application, arguments);
 };
+
 
 /**
  * @desc register middleware on express
@@ -243,6 +479,7 @@ Xpress.prototype.engine = function () {
 Xpress.prototype.use = function (fn) {
     this.application.use.apply(this.application, arguments);
 };
+
 
 /**
  * @desc register a sub router
@@ -295,117 +532,6 @@ Xpress.prototype.error = function (code, fn) {
             }
             fn(err, req, res, next);
         };
-    }
-};
-
-
-Xpress.prototype.__routing = function (callback) {
-    var self = this;
-
-    if(self.__route && self.__route.auto){
-        if(!self.__route.controller){
-            throw new Error('auto route need controller path');
-        }
-
-        fs.walk(self.__route.controller, function (pth, file, next) {
-            var filepath = path.join(pth, file);
-            var pathname = path.relative(self.__route.controller, pth).split(path.sep).join('/');
-            var filename = path.basename(filepath, path.extname(filepath));
-            var module = require(filepath);
-
-            for(var key in module){
-
-                var action = module[key];
-
-                if(!(action instanceof  Controller)){
-                    logger('yellow', filepath + '->' + key + ' is not a auto register route');
-                    continue;
-                }
-
-                if(!action.__handler){
-                    throw new Error('controller has no handler');
-                }
-
-                if(typeof action.__handler !== 'function'){
-                    throw new Error('controller handler is not function');
-                }
-
-                if(!action.__action){
-                    throw new Error('controller has no action');
-                }
-
-                var routePath = action.__path || path.join('/', pathname, filename, action.__action);
-
-                var validateFunction = {
-                    header: function () {
-                        return null;
-                    },
-                    query: function () {
-                        return null;
-                    },
-                    body: function () {
-                        return null;
-                    }
-                };
-
-                if(action.__validate){
-                    if(action.__validate.header){
-                        validateFunction.header = validator.validateFunction('header', action.__validate.header);
-                    }
-                    if(action.__validate.query){
-                        validateFunction.query = validator.validateFunction('query', action.__validate.query);
-                    }
-                    if(action.__validate.body){
-                        validateFunction.body = validator.validateFunction('body', action.__validate.body);
-                    }
-                }
-
-                var handler = function (action, validateFunction) {
-                    return function (req, res, next) {
-                        var verifyHeaderMsg = validateFunction.header(req.headers);
-
-                        if(verifyHeaderMsg){
-                            if(req.xhr){
-                                return res.status(400).json(verifyHeaderMsg);
-                            }else{
-                                return res.status(400).send(verifyHeaderMsg);
-                            }
-                        }
-
-                        var verifyQueryMsg = validateFunction.query(req.query);
-
-                        if(verifyQueryMsg){
-                            if(req.xhr){
-                                return res.status(400).json(verifyQueryMsg);
-                            }else{
-                                return res.status(400).send(verifyQueryMsg);
-                            }
-
-                        }
-
-                        var verifyBodyMsg = validateFunction.body(req.body);
-
-                        if(verifyBodyMsg){
-                            if(req.xhr){
-                                return res.status(400).json(verifyBodyMsg);
-                            }else{
-                                return res.status(400).send(verifyBodyMsg);
-                            }
-                        }
-
-                        action.__handler(req, res, next);
-                    };
-                };
-
-                logger('green', 'Register:', action.__method, action.__version, action.__channel, routePath);
-
-                self[action.__method](routePath, {v: action.__version, c: action.__channel}, handler(action, validateFunction));
-            }
-
-            next();
-        }, callback);
-    }else{
-        callback && callback();
     }
 };
 

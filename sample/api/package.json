@@ -13,7 +13,8 @@
     "dox":"*"
   },
   "devDependencies":{
-    "dox":"*"
+    "dox":"*",
+    "gulp":"*"
   },
   "author": "",
   "license": "ISC"

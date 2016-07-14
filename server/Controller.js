@@ -11,13 +11,20 @@ var Controller = function (exports, action) {
     this.__channel = null;
     this.__validate = null;
     this.__handler = null;
-    this.__name = null;
+    this.__summary = null;
     this.__desc= null;
     this.__author = null;
+    this.__deprecated = null;
 };
 
 Controller.action = function (exports, action) {
     return new Controller(exports, action);
+};
+
+//
+Controller.prototype.deprecated = function () {
+    this.__deprecated = true;
+    return this;
 };
 
 Controller.prototype.path = function (p) {
@@ -40,8 +47,8 @@ Controller.prototype.channel = function (c) {
     return this;
 };
 
-Controller.prototype.name = function (name) {
-    this.__name = name;
+Controller.prototype.summary = function (summary) {
+    this.__summary = summary;
     return this;
 };
 
@@ -63,43 +70,55 @@ Controller.prototype.handle = function (handler) {
         throw new Error('handler should be a function');
     }
     this.__handler = handler;
+
+    var temp = this.__method.toUpperCase() + '@';
+
+    temp += '[' + this.__action + ']';
+
+    var versionAndChannel = ':';
+
+    if(this.__version){
+        versionAndChannel = this.__version + ':';
+    }
+
+    if(this.__channel){
+        versionAndChannel +=  this.__channel;
+    }
+
+    temp += '$[' + versionAndChannel + ']';
+
+    this.__exports[temp] = this;
+
+    return this;
+};
+
+Controller.prototype.method = function (method) {
+    this.__method = method;
     return this;
 };
 
 Controller.prototype.all = function () {
-    this.__method = 'all';
-    this.__exports[this.__method + '-' + this.__action] = this;
-    return this;
+    return this.method('all');
 };
 
 Controller.prototype.get = function () {
-    this.__method = 'get';
-    this.__exports[this.__method + '-' + this.__action] = this;
-    return this;
+    return this.method('get');
 };
 
 Controller.prototype.post = function () {
-    this.__method = 'post';
-    this.__exports[this.__method + '-' + this.__action] = this;
-    return this;
+    return this.method('post');
 };
 
 Controller.prototype.delete = function () {
-    this.__method = 'delete';
-    this.__exports[this.__method + '-' + this.__action] = this;
-    return this;
+    return this.method('delete');
 };
 
 Controller.prototype.put = function () {
-    this.__method = 'put';
-    this.__exports[this.__method + '-' + this.__action] = this;
-    return this;
+    return this.method('put');
 };
 
 Controller.prototype.head = function () {
-    this.__method = 'head';
-    this.__exports[this.__method + '-' + this.__action] = this;
-    return this;
+    return this.method('head');
 };
 
 module.exports = Controller;

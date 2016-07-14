@@ -98,7 +98,7 @@ Original highlight.js style (c) Ivan Sagalaev <maniac@softwaremaniacs.org>
   font-weight: bold;
 }
 
-.javascript{
+.javascript, .json{
   width: 100%;
   text-align: left;
 }

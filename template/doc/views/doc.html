@@ -8,6 +8,7 @@
     <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="../assets/css/docs.min.css" rel="stylesheet">
     <link href="../assets/css/highlight.css" rel="stylesheet">
+    <link href="../assets/css/codemirror.css" rel="stylesheet">
 </head>
 <body>
 
@@ -15,13 +16,6 @@
 <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
     <div class="container">
         <div class="navbar-header">
-            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-navbar"
-                    aria-controls="bs-navbar" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
             <a href="/" class="navbar-brand">SDox</a>
         </div>
         <nav id="bs-navbar" class="collapse navbar-collapse">
@@ -30,7 +24,7 @@
                     <a href="/">首页</a>
                 </li>
                 <li>
-                    <a href="/">API</a>
+                    <a href="/api">API</a>
                 </li>
             </ul>
         </nav>
@@ -50,114 +44,109 @@
     <div class="row">
         <div class="col-md-10" role="main">
 
+            {{each action}}
+            <div>
+                {{#$value.raw}}
+            </div>
             <div class="bs-docs-section">
-
                 <div class="bs-example bs-example-tabs" data-example-id="togglable-tabs">
                     <div>
-                        <h4>请求用户数据的</h4>
-                        <p>获取用户的详细数据, 包括用户的地址等信息</p>
+                        <h3>{{#$value.action.action}}&nbsp;&nbsp;[{{#$value.summary}}]</h3>
+                        <p>{{#$value.action.desc}}</p>
                     </div>
                     <div class="bs-callout bs-callout-danger">
                         <p>
-                            <span>GET</span>
-                            <span>/</span>
+                            <span>{{#$value.action.method.toUpperCase()}}</span>
+
+                            {{if $value.action.version}}
+                            <span>v: {{#$value.action.version}}</span>
+                            {{/if}}
+
+                            {{if $value.action.channel}}
+
+                            <span>c: {{#$value.action.channel}}</span>
+                            {{/if}}
+
+                            <span>{{#$value.action.path}}</span>
+
+                            {{if $value.action.deprecated}}
+                            <span>c: {{#$value.action.deprecated}}</span>
+                            {{/if}}
                         </p>
                     </div>
                     <ul  class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active">
-                            <a href="#request-detail" id="request" role="tab"
-                               data-toggle="tab" aria-controls="home" aria-expanded="true">请求</a>
+                            <a href="#request-{{#$value.action.method}}"
+                               role="tab"
+                               data-toggle="tab"
+                               aria-controls="home"
+                               aria-expanded="true">请求(Request)</a>
                         </li>
                         <li role="presentation" class="">
-                            <a href="#response-detail" role="tab" id="response"
-                                                            data-toggle="tab" aria-controls="profile"
-                                                            aria-expanded="false">响应</a>
+                            <a href="#response-{{#$value.action.method}}"
+                               role="tab"
+                               data-toggle="tab"
+                               aria-controls="profile"
+                               aria-expanded="false">响应(Response)</a>
                         </li>
                         <li role="presentation" class="">
-                            <a href="#example-detail" role="tab" id="example"
-                               data-toggle="tab" aria-controls="profile"
-                               aria-expanded="false">例子</a>
+                            <a href="#example-{{#$value.action.method}}"
+                               role="tab"
+                               data-toggle="tab"
+                               aria-controls="profile"
+                               aria-expanded="false">例子(Example)</a>
                         </li>
                     </ul>
                     <div  class="tab-content">
-                        <div role="tabpanel" class="tab-pane fade active in" id="request-detail" aria-labelledby="request">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <th>名称</th>
-                                    <th>类型</th>
-                                    <th>必须</th>
-                                    <th>说明</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div role="tabpanel"
+                             class="tab-pane fade active in"
+                             id="request-{{#$value.action.method}}"
+                             aria-labelledby="request">
+
+                            {{each $value.action.params}}
+                            <div>
+                                <h4>{{#$value.region}}:</h4>
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>参数名称</th>
+                                        <th>参数类型</th>
+                                        <th>是否必须</th>
+                                        <th>参数说明</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{each $value.params}}
+                                    <tr>
+                                        <th>{{#$value.name}}</th>
+                                        <td>{{#$value.types}}</td>
+                                        <td>{{#$value.nullable ? '否': '是'}}</td>
+                                        <td>{{#$value.description}}</td>
+                                    </tr>
+                                    {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {{/each}}
                         </div>
-                        <div role="tabpanel" class="tab-pane fade" id="response-detail" aria-labelledby="response">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <th>名称</th>
-                                    <th>类型</th>
-                                    <th>必须</th>
-                                    <th>说明</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div role="tabpanel" class="tab-pane fade" id="response-{{#$value.action.method}}" aria-labelledby="response">
+                            <div class="highlight">
+                                 <pre>
+                                     <code class="javascript">{{#$value.response}}</code>
+                                </pre>
+                            </div>
                         </div>
-                        <div role="tabpanel" class="tab-pane fade" id="example-detail" aria-labelledby="example">
+                        <div role="tabpanel" class="tab-pane fade" id="example-{{#$value.action.method}}" aria-labelledby="example">
                             <div class="highlight">
                                 <pre>
-                                    <code class="javascript">
-                                        var name = 10;
-                                        var age = 20;
-                                        window.console = window.console || {log : function(){}};
-                                    </code>
+                                    <code class="javascript">{{#$value.example}}</code>
                                 </pre>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {{/each}}
         </div>
 
         <!--right menu-->
@@ -199,6 +188,7 @@
 <script src="../assets/js/jquery.min.js"></script>
 <script src="../assets/js/bootstrap.min.js"></script>
 <script src="../assets/js/highlight.min.js"></script>
+<script src="../assets/js/codemirror.min.js"></script>
 <script src="../assets/js/doc.min.js"></script>
 
 </body>

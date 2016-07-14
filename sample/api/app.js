@@ -14,6 +14,7 @@ const server = new Xpress({
     cert: null,
     trace: true,
     debug: true,
+    doc:  path.join(__dirname, 'docs'),
     port: {
         http: 8003,
         https: null

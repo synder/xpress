@@ -7,8 +7,11 @@
 
 Controller.action(exports, 'index').post()
     .path('/')
-    .desc()
+    .desc('谁实时水水水水')
     .validate({
+        param: {
+            id: {type: 'number', required: true, val: {gt: 2, lt: 20}}
+        },
         body: {
             username: {type: 'string', required: true, len: {gt: 2, lt: 20}, val: {like: ''}},
             password: {type: 'string', required: true, len: {gt: 2, lt: 20}},
@@ -34,8 +37,6 @@ Controller.action(exports, 'index').post()
 
 Controller.action(exports, 'index').get()
     .path('/')
-    .version(1)
-    .channel(2)
     .validate({
         query: {
             token: {type: 'string', required: true, len: {gt: 2, lt: 20}, val: {like: /name/}}

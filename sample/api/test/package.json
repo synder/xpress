@@ -1,0 +1,571 @@
+{
+  "account": {
+    "index": {
+      "index": {
+        "DELETE": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "delete",
+            "path": null,
+            "version": null,
+            "channel": null,
+            "author": null,
+            "desc": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Query",
+                "params": [
+                  {
+                    "name": "token",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "token should match {\"like\":{}} and token.length should match {\"gt\":2,\"lt\":20};"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "GET": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "get",
+            "path": "/",
+            "version": null,
+            "channel": null,
+            "author": null,
+            "desc": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Query",
+                "params": [
+                  {
+                    "name": "token",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "token should match {\"like\":{}} and token.length should match {\"gt\":2,\"lt\":20};"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "POST": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "post",
+            "path": "/",
+            "version": null,
+            "channel": null,
+            "author": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Param",
+                "params": [
+                  {
+                    "name": "id",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "id should match {\"gt\":2,\"lt\":20}"
+                  }
+                ]
+              },
+              {
+                "region": "Body",
+                "params": [
+                  {
+                    "name": "username",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "username should match {\"like\":\"\"} and username.length should match {\"gt\":2,\"lt\":20};"
+                  },
+                  {
+                    "name": "password",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "password.length should match {\"gt\":2,\"lt\":20};"
+                  },
+                  {
+                    "name": "scores",
+                    "types": "Array",
+                    "nullable": false,
+                    "description": "scores should match {\"eq\":[100,98]} and scores.length should match {\"gte\":2,\"lte\":20};"
+                  },
+                  {
+                    "name": "age",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "age should match {\"gte\":0,\"lte\":100}"
+                  },
+                  {
+                    "name": "channel",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "channel should match {\"eq\":2}"
+                  },
+                  {
+                    "name": "height",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "height should match {\"neq\":10}"
+                  },
+                  {
+                    "name": "gender",
+                    "types": "Bool",
+                    "nullable": false,
+                    "description": "gender should match {\"in\":[true,false]}"
+                  },
+                  {
+                    "name": "mind",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "mind should match {\"nin\":[0,1]}"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "PUT": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "put",
+            "path": null,
+            "version": null,
+            "channel": null,
+            "author": null,
+            "desc": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Query",
+                "params": [
+                  {
+                    "name": "token",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "token should match {\"like\":{}} and token.length should match {\"gt\":2,\"lt\":20};"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "home": {
+    "index": {
+      "index": {
+        "DELETE": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "delete",
+            "path": null,
+            "version": null,
+            "channel": null,
+            "author": null,
+            "desc": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Query",
+                "params": [
+                  {
+                    "name": "token",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "token should match {\"like\":{}} and token.length should match {\"gt\":2,\"lt\":20};"
+                  }
+                ]
+              }
+            ]
+          },
+          "response": {
+            "request": {
+              "url": "/?token=name",
+              "headers": {
+                "host": "127.0.0.1:8003",
+                "connection": "close",
+                "user-agent": "Paw/2.3.4 (Macintosh; OS X/10.11.5) GCDHTTPRequest"
+              },
+              "query": {
+                "token": "name"
+              },
+              "param": {},
+              "body": {}
+            },
+            "response": {
+              "body": "{\"code\":1,\"msg\":null,\"data\":{\"version\":1}}"
+            }
+          },
+          "example": {
+            "body": "{\"code\":1,\"msg\":null,\"data\":{\"version\":1}}"
+          }
+        },
+        "GET": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "get",
+            "path": "/",
+            "version": null,
+            "channel": null,
+            "author": null,
+            "desc": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Query",
+                "params": [
+                  {
+                    "name": "token",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "token should match {\"like\":{}} and token.length should match {\"gt\":2,\"lt\":20};"
+                  }
+                ]
+              }
+            ]
+          },
+          "response": {
+            "request": {
+              "url": "/?token=name",
+              "headers": {
+                "host": "127.0.0.1:8003",
+                "connection": "close",
+                "user-agent": "Paw/2.3.4 (Macintosh; OS X/10.11.5) GCDHTTPRequest"
+              },
+              "query": {
+                "token": "name"
+              },
+              "param": {},
+              "body": {}
+            },
+            "response": {
+              "body": "{\"code\":1,\"msg\":null,\"data\":{\"version\":1}}"
+            }
+          },
+          "example": {
+            "body": "{\"code\":1,\"msg\":null,\"data\":{\"version\":1}}"
+          }
+        },
+        "POST": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "post",
+            "path": "/",
+            "version": null,
+            "channel": null,
+            "author": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Param",
+                "params": [
+                  {
+                    "name": "id",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "id should match {\"gt\":2,\"lt\":20}"
+                  }
+                ]
+              },
+              {
+                "region": "Body",
+                "params": [
+                  {
+                    "name": "username",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "username should match {\"like\":\"\"} and username.length should match {\"gt\":2,\"lt\":20};"
+                  },
+                  {
+                    "name": "password",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "password.length should match {\"gt\":2,\"lt\":20};"
+                  },
+                  {
+                    "name": "scores",
+                    "types": "Array",
+                    "nullable": false,
+                    "description": "scores should match {\"eq\":[100,98]} and scores.length should match {\"gte\":2,\"lte\":20};"
+                  },
+                  {
+                    "name": "age",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "age should match {\"gte\":0,\"lte\":100}"
+                  },
+                  {
+                    "name": "channel",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "channel should match {\"eq\":2}"
+                  },
+                  {
+                    "name": "height",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "height should match {\"neq\":10}"
+                  },
+                  {
+                    "name": "gender",
+                    "types": "Bool",
+                    "nullable": false,
+                    "description": "gender should match {\"in\":[true,false]}"
+                  },
+                  {
+                    "name": "mind",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "mind should match {\"nin\":[0,1]}"
+                  }
+                ]
+              }
+            ]
+          },
+          "response": {
+            "request": {
+              "url": "/?token=name",
+              "headers": {
+                "host": "127.0.0.1:8003",
+                "connection": "close",
+                "user-agent": "Paw/2.3.4 (Macintosh; OS X/10.11.5) GCDHTTPRequest"
+              },
+              "query": {
+                "token": "name"
+              },
+              "param": {},
+              "body": {}
+            },
+            "response": {
+              "body": "{\"code\":1,\"msg\":null,\"data\":{\"version\":1}}"
+            }
+          },
+          "example": {
+            "body": "{\"code\":1,\"msg\":null,\"data\":{\"version\":1}}"
+          }
+        },
+        "PUT": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "put",
+            "path": null,
+            "version": null,
+            "channel": null,
+            "author": null,
+            "desc": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Query",
+                "params": [
+                  {
+                    "name": "token",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "token should match {\"like\":{}} and token.length should match {\"gt\":2,\"lt\":20};"
+                  }
+                ]
+              }
+            ]
+          },
+          "response": {
+            "request": {
+              "url": "/?token=name",
+              "headers": {
+                "host": "127.0.0.1:8003",
+                "connection": "close",
+                "user-agent": "Paw/2.3.4 (Macintosh; OS X/10.11.5) GCDHTTPRequest"
+              },
+              "query": {
+                "token": "name"
+              },
+              "param": {},
+              "body": {}
+            },
+            "response": {
+              "body": "{\"code\":1,\"msg\":null,\"data\":{\"version\":1}}"
+            }
+          },
+          "example": {
+            "body": "{\"code\":1,\"msg\":null,\"data\":{\"version\":1}}"
+          }
+        }
+      }
+    },
+    "login": {
+      "index": {
+        "DELETE": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "delete",
+            "path": null,
+            "version": null,
+            "channel": null,
+            "author": null,
+            "desc": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Query",
+                "params": [
+                  {
+                    "name": "token",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "token should match {\"like\":{}} and token.length should match {\"gt\":2,\"lt\":20};"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "GET": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "get",
+            "path": "/",
+            "version": null,
+            "channel": null,
+            "author": null,
+            "desc": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Query",
+                "params": [
+                  {
+                    "name": "token",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "token should match {\"like\":{}} and token.length should match {\"gt\":2,\"lt\":20};"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "POST": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "post",
+            "path": "/",
+            "version": null,
+            "channel": null,
+            "author": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Param",
+                "params": [
+                  {
+                    "name": "id",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "id should match {\"gt\":2,\"lt\":20}"
+                  }
+                ]
+              },
+              {
+                "region": "Body",
+                "params": [
+                  {
+                    "name": "username",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "username should match {\"like\":\"\"} and username.length should match {\"gt\":2,\"lt\":20};"
+                  },
+                  {
+                    "name": "password",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "password.length should match {\"gt\":2,\"lt\":20};"
+                  },
+                  {
+                    "name": "scores",
+                    "types": "Array",
+                    "nullable": false,
+                    "description": "scores should match {\"eq\":[100,98]} and scores.length should match {\"gte\":2,\"lte\":20};"
+                  },
+                  {
+                    "name": "age",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "age should match {\"gte\":0,\"lte\":100}"
+                  },
+                  {
+                    "name": "channel",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "channel should match {\"eq\":2}"
+                  },
+                  {
+                    "name": "height",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "height should match {\"neq\":10}"
+                  },
+                  {
+                    "name": "gender",
+                    "types": "Bool",
+                    "nullable": false,
+                    "description": "gender should match {\"in\":[true,false]}"
+                  },
+                  {
+                    "name": "mind",
+                    "types": "Number",
+                    "nullable": false,
+                    "description": "mind should match {\"nin\":[0,1]}"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "PUT": {
+          "action": {
+            "action": "index",
+            "summary": null,
+            "method": "put",
+            "path": null,
+            "version": null,
+            "channel": null,
+            "author": null,
+            "desc": null,
+            "deprecated": null,
+            "params": [
+              {
+                "region": "Query",
+                "params": [
+                  {
+                    "name": "token",
+                    "types": "String",
+                    "nullable": false,
+                    "description": "token should match {\"like\":{}} and token.length should match {\"gt\":2,\"lt\":20};"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+
