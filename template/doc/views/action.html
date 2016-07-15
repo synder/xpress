@@ -21,109 +21,111 @@
             <div class="bs-docs-section">
                 {{each $value.versions}}
                     {{if $value}}
-                    <div class="bs-docs-section">
-                        <div>
-                            <h3>
-                                <span>{{$value.action}}</span>
-                                <span>-</span>
-                                <span>{{$value.summary}}</span>
-                            </h3>
-                            <p>{{$value.desc}}</p>
-                        </div>
-                        <div class="bs-callout bs-callout-danger">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div>
+                                <h3>
+                                    <span>{{$value.action}}</span>
+                                    <span>-</span>
+                                    <span>{{$value.summary}}</span>
+                                </h3>
+                                <p>{{$value.desc}}</p>
+                            </div>
+                            <div class="bs-callout bs-callout-danger">
                             <span>
                                 {{$value.method.toUpperCase()}}
                             </span>
 
-                            {{if $value.version}}
-                            <span>v: {{$value.version}}</span>
-                            {{/if}}
+                                {{if $value.version}}
+                                <span>v: {{$value.version}}</span>
+                                {{/if}}
 
-                            {{if $value.channel}}
-                            <span>c: {{$value.channel}}</span>
-                            {{/if}}
+                                {{if $value.channel}}
+                                <span>c: {{$value.channel}}</span>
+                                {{/if}}
 
-                            <span>{{$value.path}}</span>
+                                <span>{{$value.path}}</span>
 
-                            {{if $value.deprecated}}
-                            <span>c: {{$value.deprecated}}</span>
-                            {{/if}}
-                        </div>
-                        <div class="bs-example bs-example-tabs">
-                            <div>
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li role="presentation" class="active">
-                                        <a href="#req{{$value.actionID}}"
-                                           role="tab"
-                                           data-toggle="tab"
-                                           aria-controls="home"
-                                           aria-expanded="true">请求(Request)</a>
-                                    </li>
-                                    <li role="presentation" class="">
-                                        <a href="#res{{$value.actionID}}"
-                                           role="tab"
-                                           data-toggle="tab"
-                                           aria-controls="profile"
-                                           aria-expanded="false">响应(Response)</a>
-                                    </li>
-                                    <li role="presentation" class="">
-                                        <a href="#exa{{$value.actionID}}"
-                                           role="tab"
-                                           data-toggle="tab"
-                                           aria-controls="profile"
-                                           aria-expanded="false">例子(Example)</a>
-                                    </li>
-                                </ul>
-                                <div class="tab-content">
-                                    <div id="req{{$value.actionID}}" role="tabpanel" class="tab-pane fade active in"
-                                         aria-labelledby="request">
-                                        {{each $value.request}}
-                                        <div>
-                                            <h4>{{$value.region}}:</h4>
-                                            <table class="table table-hover">
-                                                <thead>
-                                                <tr>
-                                                    <th>参数名称</th>
-                                                    <th>参数类型</th>
-                                                    <th>是否必须</th>
-                                                    <th>参数说明</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                {{each $value.params}}
-                                                <tr>
-                                                    <th>{{$value.name}}</th>
-                                                    <td>{{$value.types}}</td>
-                                                    <td>{{$value.nullable ? '否': '是'}}</td>
-                                                    <td>{{$value.description}}</td>
-                                                </tr>
-                                                {{/each}}
-                                                </tbody>
-                                            </table>
+                                {{if $value.deprecated}}
+                                <span>c: {{$value.deprecated}}</span>
+                                {{/if}}
+                            </div>
+                            <div class="bs-example bs-example-tabs">
+                                <div>
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active">
+                                            <a href="#req{{$value.actionID}}"
+                                               role="tab"
+                                               data-toggle="tab"
+                                               aria-controls="home"
+                                               aria-expanded="true">请求(Request)</a>
+                                        </li>
+                                        <li role="presentation" class="">
+                                            <a href="#res{{$value.actionID}}"
+                                               role="tab"
+                                               data-toggle="tab"
+                                               aria-controls="profile"
+                                               aria-expanded="false">响应(Response)</a>
+                                        </li>
+                                        <li role="presentation" class="">
+                                            <a href="#exa{{$value.actionID}}"
+                                               role="tab"
+                                               data-toggle="tab"
+                                               aria-controls="profile"
+                                               aria-expanded="false">例子(Example)</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="req{{$value.actionID}}" role="tabpanel" class="tab-pane fade active in"
+                                             aria-labelledby="request">
+                                            {{each $value.request}}
+                                            <div>
+                                                <h4>{{$value.region}}:</h4>
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>参数名称</th>
+                                                        <th>参数类型</th>
+                                                        <th>是否必须</th>
+                                                        <th>参数说明</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {{each $value.params}}
+                                                    <tr>
+                                                        <th>{{$value.name}}</th>
+                                                        <td>{{$value.types}}</td>
+                                                        <td>{{$value.nullable ? '否': '是'}}</td>
+                                                        <td>{{$value.description}}</td>
+                                                    </tr>
+                                                    {{/each}}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            {{/each}}
                                         </div>
-                                        {{/each}}
-                                    </div>
-                                    <div id="res{{$value.actionID}}" role="tabpanel" class="tab-pane fade"
-                                         aria-labelledby="response">
-                                        <div class="highlight">
+                                        <div id="res{{$value.actionID}}" role="tabpanel" class="tab-pane fade"
+                                             aria-labelledby="response">
+                                            <div class="highlight">
                                              <pre>
                                                  <code class="javascript">{{$value.response}}</code>
                                             </pre>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div id="exa{{$value.actionID}}" role="tabpanel" class="tab-pane fade"
-                                         aria-labelledby="example">
-                                        <div class="highlight">
-                                            {{if $value.example}}
-                                            <p>Request</p>
+                                        <div id="exa{{$value.actionID}}" role="tabpanel" class="tab-pane fade"
+                                             aria-labelledby="example">
+                                            <div class="highlight">
+                                                {{if $value.example}}
+                                                <p>Request</p>
                                             <pre>
                                                 <code class="javascript">{{$value.example.request}}</code>
                                             </pre>
-                                            <p>Response</p>
+                                                <p>Response</p>
                                             <pre>
                                                 <code class="javascript">{{$value.example.response}}</code>
                                             </pre>
-                                            {{/if}}
+                                                {{/if}}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

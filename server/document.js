@@ -275,8 +275,9 @@ var renderActionHtmlDocument = function (docPath, oneActionDocument, callback) {
     var controller = oneActionDocument.controller;
     var action = oneActionDocument.action;
 
-    var dirpath = path.join(rootPath, module, controller);
-    var filepath = path.join(dirpath, action + '.html');
+    var filename = module + '-' + controller + '-' + action.toLowerCase() + '.html';
+    var dirpath = path.join(rootPath, 'api');
+    var filepath = path.join(dirpath, filename);
 
     fs.mkdir(dirpath, function (err) {
         if(err){
@@ -465,7 +466,6 @@ var renderRawDocumentToHtmlDocument = function (docPath, callback) {
         });
     });
 };
-
 
 
 exports.actionDocument = actionDocument;

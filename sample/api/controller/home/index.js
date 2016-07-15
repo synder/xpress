@@ -53,6 +53,27 @@ Controller.action(exports, 'index').get()
     });
 
 
+Controller.action(exports, 'index').get()
+    .path('/')
+    .version(2)
+    .channel(3)
+    .validate({
+        query: {
+            token: {type: 'string', required: true, len: {gt: 2, lt: 20}, val: {like: /name/}}
+        }
+    })
+    .handle( function(req, res, next){
+        res.json({
+            code: 1,
+            msg: null,
+            data: {
+                version: 1.0
+            }
+        });
+    });
+
+
+
 Controller.action(exports, 'index').put()
     .validate({
         query: {
