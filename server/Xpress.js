@@ -14,13 +14,14 @@ const events = require('events');
 const cluster = require('cluster');
 const express = require('express');
 const fs = require('../lib/fs');
+const document = require('../lib/document');
 const string = require('../lib/string');
 const route = require('./route');
 const Router = require('./Router');
 const Controller = require('./Controller');
 const validator = require('./validator');
 const template = require('./template');
-const document = require('./document');
+
 const EventEmitter = events.EventEmitter;
 
 var DEBUG = false;
@@ -327,10 +328,6 @@ Xpress.prototype.__routing = function (callback) {
                 continue;
             }
 
-            if(action.__deprecated){
-                continue;
-            }
-
             if(typeof action.__handler !== 'function'){
                 throw new Error('controller handler is not function');
             }
@@ -352,6 +349,10 @@ Xpress.prototype.__routing = function (callback) {
             if(self.__doc){
                 var docPath = self.__doc;
                 document.actionDocument(action, docPath);
+            }
+
+            if(action.__deprecated){
+                continue;
             }
 
             logger('green', 'Register:', action.__method, action.__version, action.__channel, action.__path);

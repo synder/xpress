@@ -24,7 +24,7 @@
                     <%var version = method.versions[j];%>
                     <%if(version){%>
                     <div class="panel panel-default">
-                        <div class="panel-body">
+                        <div class="panel-body <%= version.deprecated ? 'deprecated': ''%>">
                             <div>
                                 <h3>
                                     <span><%= version.action%></span>
@@ -33,24 +33,26 @@
                                 </h3>
                                 <p><%= version.desc%></p>
                             </div>
-                            <div class="bs-callout bs-callout-danger">
-                            <span>
-                                <%= version.method.toUpperCase()%>
-                            </span>
+                            <div class="bs-callout <%= version.deprecated ? 'bs-callout-danger': ' bs-callout-info'%>">
+                                <p class="<%= version.deprecated ? 'deprecated': ''%>">
+                                    <span>
+                                        <%= version.method.toUpperCase()%>
+                                    </span>
 
-                                <%if(version.version){%>
-                                <span>v: <%= version.version%></span>
-                                <%}%>
+                                    <%if(version.version){%>
+                                    <span>v: <%= version.version%></span>
+                                    <%}%>
 
-                                <%if(version.channel){%>
-                                <span>c: <%= version.channel%></span>
-                                <%}%>
+                                    <%if(version.channel){%>
+                                    <span>c: <%= version.channel%></span>
+                                    <%}%>
 
-                                <span><%= version.path%></span>
+                                    <span><%= version.path%></span>
 
-                                <%if(version.deprecated){%>
-                                <span>c: <%= version.deprecated%></span>
-                                <%}%>
+                                    <%if(version.deprecated){%>
+                                    <span> 已经废除</span>
+                                    <%}%>
+                                </p>
                             </div>
                             <div class="bs-example bs-example-tabs">
                                 <div>

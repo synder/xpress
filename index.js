@@ -6,8 +6,7 @@ const Xpress = require('./server/Xpress');
 const Router = require('./server/Router');
 const Controller = require('./server/Controller');
 
-const document = require('./server/document');
-
+const document = require('./lib/document');
 const parser = require('./lib/parser');
 const string = require('./lib/string');
 const validate = require('./lib/validate');
@@ -19,7 +18,6 @@ module.exports.Controller = Controller;
 module.exports.Controller = Controller;
 
 module.exports.document = document;
-
 module.exports.fs = fs;
 module.exports.parser = parser;
 module.exports.string = string;
