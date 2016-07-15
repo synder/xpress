@@ -1,0 +1,66 @@
+<ul  class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+        <a href="#req-{{actionID}}"
+           role="tab"
+           data-toggle="tab"
+           aria-controls="home"
+           aria-expanded="true">请求(Request)</a>
+    </li>
+    <li role="presentation" class="">
+        <a href="#res-{{actionID}}"
+           role="tab"
+           data-toggle="tab"
+           aria-controls="profile"
+           aria-expanded="false">响应(Response)</a>
+    </li>
+    <li role="presentation" class="">
+        <a href="#exa-{{actionID}}"
+           role="tab"
+           data-toggle="tab"
+           aria-controls="profile"
+           aria-expanded="false">例子(Example)</a>
+    </li>
+</ul>
+<div  class="tab-content">
+    <div id="req-{{actionID}}" role="tabpanel" class="tab-pane fade active in" aria-labelledby="request">
+        {{each request}}
+        <div>
+            <h4>{{$value.region}}:</h4>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>参数名称</th>
+                    <th>参数类型</th>
+                    <th>是否必须</th>
+                    <th>参数说明</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{each $value.params}}
+                <tr>
+                    <th>{{$value.name}}</th>
+                    <td>{{$value.types}}</td>
+                    <td>{{$value.nullable ? '否': '是'}}</td>
+                    <td>{{$value.description}}</td>
+                </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+        {{/each}}
+    </div>
+    <div id="res-{{actionID}}" role="tabpanel" class="tab-pane fade" aria-labelledby="response">
+        <div class="highlight">
+             <pre>
+                 <code class="javascript">{{response}}</code>
+            </pre>
+        </div>
+    </div>
+    <div id="exa-{{actionID}}" role="tabpanel" class="tab-pane fade" aria-labelledby="example">
+        <div class="highlight">
+            <pre>
+                <code class="javascript">{{example}}</code>
+            </pre>
+        </div>
+    </div>
+</div>

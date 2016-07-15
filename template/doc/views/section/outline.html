@@ -1,0 +1,27 @@
+<div>
+    <h3>
+        <span>{{action}}</span>
+        <span>-</span>
+        <span>{{summary}}</span>
+    </h3>
+    <p>{{desc}}</p>
+</div>
+<div class="bs-callout bs-callout-danger">
+    <span>
+        {{method.toUpperCase()}}
+    </span>
+
+    {{if version}}
+        <span>v: {{version}}</span>
+    {{/if}}
+
+    {{if channel}}
+        <span>c: {{channel}}</span>
+    {{/if}}
+
+    <span>{{path}}</span>
+
+    {{if deprecated}}
+        <span>c: {{deprecated}}</span>
+    {{/if}}
+</div>

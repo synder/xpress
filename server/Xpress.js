@@ -191,190 +191,181 @@ Xpress.prototype.__document = function (type, moduleName, controllerName, action
 };
 
 
+Xpress.prototype.__genRouteHandler = function (action) {
+
+    var self = this;
+
+    if(!(action instanceof Controller)){
+        throw new Error('');
+    }
+
+    return function (req, res, next) {
+
+        var verifyHeaderMsg = action.__validateHeaderFunc(req.headers);
+
+        if(verifyHeaderMsg){
+            if(req.xhr){
+                return res.status(400).json(verifyHeaderMsg);
+            }else{
+                return res.status(400).send(verifyHeaderMsg);
+            }
+        }
+
+        var verifyParamMsg = action.__validateParamFunc(req.params);
+
+        if(verifyParamMsg){
+            if(req.xhr){
+                return res.status(400).json(verifyParamMsg);
+            }else{
+                return res.status(400).send(verifyParamMsg);
+            }
+
+        }
+
+        var verifyQueryMsg = action.__validateQueryFunc(req.query);
+
+        if(verifyQueryMsg){
+            if(req.xhr){
+                return res.status(400).json(verifyQueryMsg);
+            }else{
+                return res.status(400).send(verifyQueryMsg);
+            }
+
+        }
+
+        var verifyBodyMsg = action.__validateBodyFunc(req.body);
+
+        if(verifyBodyMsg){
+            if(req.xhr){
+                res.status(400).json(verifyBodyMsg);
+            }else{
+                res.status(400).send(verifyBodyMsg);
+            }
+            return;
+        }
+
+        if(self.__doc){
+
+            var send = res.send;
+
+            res.send = function(){
+
+                var responseBody = null;
+
+                if(arguments.length > 0){
+                    try{
+                        responseBody = JSON.parse(arguments[0]);
+                    }catch (ex){
+                        responseBody = arguments[0];
+                    }
+                }
+
+                var request = {
+                    headers: req.headers
+                };
+
+                if(req.query){
+                    request.query = req.query;
+                }
+
+                if(req.param){
+                    request.param = req.params;
+                }
+
+                if(req.body){
+                    request.body = req.body;
+                }
+
+                var response = responseBody;
+
+                var example = {
+                    request: request,
+                    response :response
+                };
+
+                document.responseDocument(action, self.__doc, response);
+                document.exampleDocument(action, self.__doc, example);
+
+                return send.apply(res, arguments);
+            };
+        }
+
+        action.__handler(req, res, next);
+    };
+};
+
 /**
  * @desc auto route
  * */
 Xpress.prototype.__routing = function (callback) {
     var self = this;
 
-    if(self.__route && self.__route.auto){
-        if(!self.__route.controller){
-            throw new Error('auto route need controller path');
-        }
+    if(!(self.__route && self.__route.auto)){
+        return callback();
+    }
 
-        fs.walk(self.__route.controller, function (pth, file, next) {
-            var filepath = path.join(pth, file);
-            var pathname = path.relative(self.__route.controller, pth).split(path.sep).join('/');
-            var filename = path.basename(filepath, path.extname(filepath));
-            var module = require(filepath);
+    var controllersPath = self.__route.controller;
 
-            for(var key in module){
+    if(!controllersPath){
+        throw new Error('auto route need controller path');
+    }
 
-                var action = module[key];
+    fs.walk(controllersPath, function (pth, file, next) {
 
-                if(!(action instanceof  Controller)){
-                    logger('yellow', filepath + '->' + key + ' is not a auto register route');
-                    continue;
-                }
+        var filepath = path.join(pth, file);
+        var pathname = path.relative(self.__route.controller, pth).split(path.sep).join('/');
+        var filename = path.basename(filepath, path.extname(filepath));
 
-                var moduleName = pathname;
-                var controllerName = filename;
-                var actionName = key;
-                var routePath = action.__path || path.join('/', pathname, filename, action.__action);
+        var module = require(filepath);
 
-                //gen doc obj and save on disk
-                if(self.__doc){
-                    var docObj = document.genDocObjWithController(action, routePath);
-                    self.__document('action', moduleName, controllerName, actionName, docObj);
-                }
+        for(var key in module){
 
-                if(action.__deprecated){
-                    continue
-                }
+            var action = module[key];
 
-                if(!action.__handler){
-                    throw new Error('controller has no handler');
-                }
-
-                if(typeof action.__handler !== 'function'){
-                    throw new Error('controller handler is not function');
-                }
-
-                if(!action.__action){
-                    throw new Error('controller has no action');
-                }
-
-                var validateFunction = {
-                    header: function () {
-                        return null;
-                    },
-                    param: function () {
-                        return null;
-                    },
-                    query: function () {
-                        return null;
-                    },
-                    body: function () {
-                        return null;
-                    }
-                };
-
-                if(action.__validate){
-                    if(action.__validate.header){
-                        validateFunction.header = validator.validateFunction('header', action.__validate.header);
-                    }
-
-                    if(action.__validate.param){
-                        validateFunction.param = validator.validateFunction('param', action.__validate.param);
-                    }
-
-                    if(action.__validate.query){
-                        validateFunction.query = validator.validateFunction('query', action.__validate.query);
-                    }
-
-                    if(action.__validate.body){
-                        validateFunction.body = validator.validateFunction('body', action.__validate.body);
-                    }
-                }
-
-                var handler = function (moduleName, controllerName, actionName, action, validateFunction) {
-                    return function (req, res, next) {
-                        var verifyHeaderMsg = validateFunction.header(req.headers);
-
-                        if(verifyHeaderMsg){
-                            if(req.xhr){
-                                return res.status(400).json(verifyHeaderMsg);
-                            }else{
-                                return res.status(400).send(verifyHeaderMsg);
-                            }
-                        }
-
-                        var verifyParamMsg = validateFunction.param(req.query);
-
-                        if(verifyParamMsg){
-                            if(req.xhr){
-                                return res.status(400).json(verifyParamMsg);
-                            }else{
-                                return res.status(400).send(verifyParamMsg);
-                            }
-
-                        }
-
-                        var verifyQueryMsg = validateFunction.query(req.query);
-
-                        if(verifyQueryMsg){
-                            if(req.xhr){
-                                return res.status(400).json(verifyQueryMsg);
-                            }else{
-                                return res.status(400).send(verifyQueryMsg);
-                            }
-
-                        }
-
-                        var verifyBodyMsg = validateFunction.body(req.body);
-
-                        if(verifyBodyMsg){
-                            if(req.xhr){
-                                return res.status(400).json(verifyBodyMsg);
-                            }else{
-                                return res.status(400).send(verifyBodyMsg);
-                            }
-                        }
-
-                        if(self.__doc){
-                            //记录请求和响应
-                            var oldSendFunction = res.send;
-
-                            res.send = function(){
-
-                                var body = null;
-
-                                try{
-                                    body = arguments.length > 0 ? JSON.parse(arguments[0]) : null;
-                                }catch (ex){
-                                    body = arguments.length > 0 ? arguments[0] : null;
-                                }
-
-                                self.__document('response', moduleName, controllerName, actionName, {
-                                    headers: res.headers,
-                                    body: body
-                                });
-
-                                self.__document('example', moduleName, controllerName, actionName, {
-                                    request: {
-                                        url: req.originalUrl,
-                                        headers: req.headers,
-                                        query: req.query,
-                                        param: req.params,
-                                        body: req.body
-                                    },
-                                    response: {
-                                        body: body
-                                    }
-                                });
-
-                                return oldSendFunction.apply(res, arguments);
-                            };
-                        }
-
-                        action.__handler(req, res, next);
-                    };
-                };
-
-                logger('green', 'Register:', action.__method, action.__version, action.__channel, routePath);
-
-                self[action.__method](
-                    routePath,
-                    {v: action.__version, c: action.__channel},
-                    handler(moduleName, controllerName, actionName, action, validateFunction)
-                );
+            if(!(action instanceof  Controller)){
+                logger('yellow', filepath + '->' + key + ' is not a auto register route');
+                continue;
             }
 
-            next();
-        }, callback);
-    }else{
-        callback && callback();
-    }
+            if(action.__deprecated){
+                continue;
+            }
+
+            if(typeof action.__handler !== 'function'){
+                throw new Error('controller handler is not function');
+            }
+
+            if(!action.__method){
+                throw new Error('controller has no method');
+            }
+
+            if(!action.__action){
+                throw new Error('controller has no action name');
+            }
+
+            var autoPath = path.join('/', pathname, filename, action.__action);
+
+            action.__module = pathname;
+            action.__controller = filename;
+            action.__path = action.__path || autoPath;
+
+            if(self.__doc){
+                var docPath = self.__doc;
+                document.actionDocument(action, docPath);
+            }
+
+            logger('green', 'Register:', action.__method, action.__version, action.__channel, action.__path);
+
+            var versionAndChannel = {v: action.__version, c: action.__channel};
+
+            var handler = self.__genRouteHandler(action);
+
+            self[action.__method](action.__path, versionAndChannel, handler);
+        }
+
+        next();
+
+    }, callback);
 };
 
 

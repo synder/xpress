@@ -2,40 +2,92 @@
  * Created by synder on 16/7/11.
  */
 
+const os = require('os');
 const path = require('path');
+const async = require('async');
 const engine = require('art-template');
+const crypto = require('crypto');
 const fs = require('../lib/fs');
 const string = require('../lib/string');
-const Controller = require('../server/Controller');
+const Controller = require('./Controller');
 
-const tmplDir = path.join(__dirname, '../template/doc/views/');
-const indexTmplPath = path.join(tmplDir, 'index.html');
-const docTmplPath = path.join(tmplDir, 'doc.html');
+const TMPL_DIR_PATH = path.join(__dirname, '../template/doc/views');
+const MODULE_TMPL_PATH = path.join(TMPL_DIR_PATH, 'module');
+const ACTION_TMPL_PATH = path.join(TMPL_DIR_PATH, 'action');
+const SUFFIX = {
+    ACTION: '&A.json',
+    RESPONSE: '&R.json',
+    EXAMPLE: '&E.json'
+};
+
+/**
+ * @desc gen file name
+ * */
+var genDocRawDocumentPath = function (docPath) {
+    return path.join(docPath, 'raw');
+};
+
+var genDocHtmlDocumentPath = function (docPath) {
+    return path.join(docPath, 'html');
+};
+
+var genActionDocumentFileName = function (action) {
+    return action.__id() + SUFFIX.ACTION;
+};
+
+var genResponseDocumentFileName = function (action) {
+    return action.__id() + SUFFIX.RESPONSE;
+};
+
+var genExampleDocumentFileName = function (action) {
+    return action.__id() + SUFFIX.EXAMPLE;
+};
+
+var genActionID = function (str) {
+    return crypto.createHash('md5').update(str).digest('hex');
+};
+
+/***/
+var getActionNameFromDocFileName = function (filename) {
+    return filename.split('@')[1].split('#')[0];
+};
+
+var getActionIDFromDocFileName = function (filename) {
+    return filename.split('&')[0];
+};
+
+var getMethodFromDocFileName = function (filename) {
+    return filename.split('@')[0];
+};
+
+var getVerAndChaFromDocFileName = function (filename) {
+    return filename.split('&')[0].split('#')[1].split(':')
+};
 
 
 /**
  * @desc gen doc by controller
  * */
-var genDocObjWithController = function (controller,routePath) {
+var actionDocument = function (action, docPath, callback) {
 
-    if(!(controller instanceof Controller)){
-        throw new Error('controller should be a Controller instance');
+    if(!(action instanceof Controller)){
+        throw new Error('action should be a Controller instance');
     }
 
     var docObj = {
-        action: controller.__action,
-        summary: controller.__summary,
-        method: controller.__method,
-        path: routePath,
-        version: controller.__version,
-        channel: controller.__channel,
-        author: controller.__author,
-        desc: controller.__desc,
-        deprecated: controller.__deprecated,
-        params: []
+        action: action.__action,
+        summary: action.__summary,
+        method: action.__method,
+        path: action.__path,
+        version: action.__version,
+        channel: action.__channel,
+        author: action.__author,
+        desc: action.__desc,
+        deprecated: action.__deprecated,
+        request: []
     };
 
-    var validator = controller.__validate;
+    var validator = action.__validate;
 
     var headerParam = {
         region: 'Header',
@@ -130,59 +182,294 @@ var genDocObjWithController = function (controller,routePath) {
 
     if(headerParam.params.length > 0){
         headerParam.params.sort(sort);
-        docObj.params.push(headerParam);
+        docObj.request.push(headerParam);
     }
 
     if(paramParam.params.length > 0){
         paramParam.params.sort(sort);
-        docObj.params.push(paramParam);
+        docObj.request.push(paramParam);
     }
 
     if(queryParam.params.length > 0){
         queryParam.params.sort(sort);
-        docObj.params.push(queryParam);
+        docObj.request.push(queryParam);
     }
 
     if(bodyParam.params.length > 0){
         bodyParam.params.sort(sort);
-        docObj.params.push(bodyParam);
+        docObj.request.push(bodyParam);
     }
 
-    return docObj;
+    var docStr = JSON.stringify(docObj);
+
+    var actionDocSavePath = path.join(genDocRawDocumentPath(docPath), action.__module, action.__controller);
+
+    fs.mkdir(actionDocSavePath, function (err) {
+        if(err){
+            return callback && callback(err);
+        }
+
+        var filename = genActionDocumentFileName(action);
+
+        var filepath = path.join(actionDocSavePath, filename);
+
+        fs.save(filepath, docStr, callback);
+    });
 };
 
 /**
- * @desc render markdown
+ * @desc 
  * */
-var renderIndexDocWithMarkdown = function (markdown, callback) {
-    //todo
-    callback && callback();
-};
+var responseDocument = function (action, docPath, response, callback) {
+    if(!(action instanceof Controller)){
+        throw new Error('action should be a Controller instance');
+    }
 
-/**
- * @desc render template
- * */
-var renderActionDocument = function (action, callback) {
-    fs.read(docTmplPath, {encoding: 'utf8'}, function (err, template) {
+    var actionDocSavePath = path.join(genDocRawDocumentPath(docPath), action.__module, action.__controller);
+
+    fs.mkdir(actionDocSavePath, function (err) {
         if(err){
             return callback(err);
         }
 
-        if(!template){
-            return callback(new Error('template is empty'));
-        }
+        var filename = genResponseDocumentFileName(action);
 
-        var render = engine.compile(template);
+        var filepath = path.join(actionDocSavePath, filename);
 
-        try{
-            var html = render(action);
-            callback(null, html);
-        }catch (ex){
-            callback(err);
-        }
+        fs.save(filepath, JSON.stringify(response), callback);
     });
 };
 
-exports.genDocObjWithController = genDocObjWithController;
-exports.renderIndexDocWithMarkdown = renderIndexDocWithMarkdown;
-exports.renderActionDocument = renderActionDocument;
+/**
+ * @desc
+ * */
+var exampleDocument = function(action, docPath, example, callback){
+    if(!(action instanceof Controller)){
+        throw new Error('action should be a Controller instance');
+    }
+
+    var actionDocSavePath = path.join(genDocRawDocumentPath(docPath), action.__module, action.__controller);
+
+    fs.mkdir(actionDocSavePath, function (err) {
+        if(err){
+            return callback(err);
+        }
+
+        var filename = genExampleDocumentFileName(action);
+
+        var filepath = path.join(actionDocSavePath, filename);
+
+        fs.save(filepath, JSON.stringify(example), callback);
+    });
+};
+
+/**
+ * @desc
+ * */
+var renderActionHtmlDocument = function (docPath, oneActionDocument, callback) {
+
+    var html = engine(ACTION_TMPL_PATH, oneActionDocument);
+
+    var rootPath = genDocHtmlDocumentPath(docPath);
+    var module = oneActionDocument.module;
+    var controller = oneActionDocument.controller;
+    var action = oneActionDocument.action;
+
+    var dirpath = path.join(rootPath, module, controller);
+    var filepath = path.join(dirpath, action + '.html');
+
+    fs.mkdir(dirpath, function (err) {
+        if(err){
+            return callback(err);
+        }
+
+        fs.save(filepath, html, {encoding: 'utf8'}, callback);
+    });
+};
+
+
+var renderModuleMenuHtmlDocument = function () {
+    
+};
+
+var renderControllerMenuHtmlDocument = function () {
+
+};
+
+var copyStaticAssert = function () {
+    
+};
+
+
+/**
+ * @desc render template
+ * */
+var renderRawDocumentToHtmlDocument = function (docPath, callback) {
+
+    var rawDocumentPath = genDocRawDocumentPath(docPath);
+
+    var rawDouments = {};
+
+    fs.walk(rawDocumentPath, function (opth, oname, onext) {
+
+        if(oname.indexOf(SUFFIX.ACTION) < 0){
+            return onext();
+        }
+
+        var tempPath = path.relative(rawDocumentPath, opth).split(path.sep);
+
+        var moduleName = tempPath[0];
+        var ctrlName = tempPath[1];
+        var actionName = getActionNameFromDocFileName(oname);
+        var methodName = getMethodFromDocFileName(oname);
+        var versionAndChannel = getVerAndChaFromDocFileName(oname);
+
+        if(!rawDouments[moduleName]){
+            rawDouments[moduleName] = {};
+        }
+
+        if(!rawDouments[moduleName][ctrlName]){
+            rawDouments[moduleName][ctrlName] = {};
+        }
+
+        if(!rawDouments[moduleName][ctrlName][actionName]){
+            rawDouments[moduleName][ctrlName][actionName] = {};
+        }
+
+        if(!rawDouments[moduleName][ctrlName][actionName][methodName]){
+            rawDouments[moduleName][ctrlName][actionName][methodName] = {};
+        }
+
+        var outerActionID = getActionIDFromDocFileName(oname);
+
+        var actionDocuments = JSON.parse(fs.readFileSync(path.join(opth, oname), {encoding: 'utf8'}));
+        actionDocuments.actionID = genActionID(outerActionID);
+
+        fs.walk(opth, function (ipth, iname, inext) {
+
+            var innerActionID = getActionIDFromDocFileName(iname);
+
+            if(innerActionID !== outerActionID){
+                return inext();
+            }
+
+            if(iname.indexOf(SUFFIX.EXAMPLE) > 0){
+                var example = JSON.parse(fs.readFileSync(path.join(ipth, iname), {encoding: 'utf8'}));
+                actionDocuments.example = {
+                    request: JSON.stringify(example.request, null, 2),
+                    response: JSON.stringify(example.response, null, 2)
+                };
+            }
+
+            if(iname.indexOf(SUFFIX.RESPONSE) > 0){
+                var response = JSON.parse(fs.readFileSync(path.join(ipth, iname), {encoding: 'utf8'}));
+                actionDocuments.response = JSON.stringify(response, null, 2);
+            }
+
+            inext();
+
+        }, function (err) {
+
+            if(err){
+                console.error(err.stack);
+            }
+
+            onext();
+        });
+
+        rawDouments[moduleName][ctrlName][actionName][methodName][versionAndChannel] = actionDocuments;
+
+    }, function (err) {
+        if(err){
+            callback(err);
+        }
+
+
+        var documents = [];
+        var moduleMenus = [];
+
+        for(var module in rawDouments){
+
+            var moduleTemp = {
+                module: module,
+                controllers : []
+            };
+
+            for(var ctrl in rawDouments[module]){
+
+                var ctrlTemp = {
+                    module: module,
+                    controller: ctrl,
+                    actions: []
+                };
+
+                for(var action in rawDouments[module][ctrl]){
+
+                    var actionTemp = {
+                        module: module,
+                        controller: ctrl,
+                        action: action,
+                        methods: []
+                    };
+
+                    for(var method in rawDouments[module][ctrl][action]){
+
+                        var methodTemp = {
+                            module: module,
+                            controller: ctrl,
+                            action: action,
+                            method: method,
+                            versions: []
+                        };
+
+                        for(var vnc in rawDouments[module][ctrl][action][method]){
+                            methodTemp.versions.push(rawDouments[module][ctrl][action][method][vnc]);
+                        }
+
+                        actionTemp.methods.push(methodTemp);
+                    }
+
+                    ctrlTemp.actions.push(actionTemp);
+                }
+
+                moduleTemp.controllers.push(ctrlTemp);
+            }
+
+            documents.push(moduleTemp);
+        }
+
+        async.eachLimit(documents, 1, function (module, next) {
+
+            var controllers = module.controllers;
+
+            async.eachLimit(controllers, 1, function (controller, next) {
+
+                var actions = controller.actions;
+
+                async.eachLimit(actions, 1, function (action, next) {
+
+                    renderActionHtmlDocument(docPath, action, function () {
+                        next();
+                    });
+
+                }, function (err) {
+                    next();
+                });
+
+            }, function (err) {
+                next();
+            });
+            
+        }, function (err) {
+            console.log(err);
+        });
+    });
+};
+
+
+
+exports.actionDocument = actionDocument;
+exports.responseDocument = responseDocument;
+exports.exampleDocument = exampleDocument;
+
+exports.renderRawDocumentToHtmlDocument = renderRawDocumentToHtmlDocument;
