@@ -1,10 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    {{include './layout/head'}}
 </head>
 <body>
+
+<!-- nav -->
+{{include './layout/navbar'}}
+
+<!-- banner -->
+{{include './layout/banner'}}
+
+<!-- content -->
+<div class="container bs-docs-container">
+    <div class="row">
+
+        <!--right menu-->
+        <div class="col-md-3" role="main">
+            <ul>
+                <li>name</li>
+            </ul>
+        </div>
+
+        <!--markdown content-->
+        <div class="col-md-2" role="complementary">
+
+        </div>
+    </div>
+</div>
+
+<!-- footer -->
+{{include './layout/footer'}}
+
+<!-- script -->
+{{include './layout/script'}}
 
 </body>
 </html>

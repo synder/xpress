@@ -36,11 +36,6 @@ const body = require('body-parser');
 server.use(body.json());
 server.use(body.urlencoded({extended: true}));
 
-//--------------------------------------------------
-const homeRouter = require('./route/home');
-
-server.sub('/', homeRouter);
-
 //---------------------------------------------------------
 server.error(404, function (err, req, res, next) {
     res.status(404).json('not found');

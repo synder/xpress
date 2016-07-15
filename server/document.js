@@ -5,7 +5,7 @@
 const os = require('os');
 const path = require('path');
 const async = require('async');
-const engine = require('art-template');
+const engine = require('art-template/node/template-native.js');
 const crypto = require('crypto');
 const fs = require('../lib/fs');
 const string = require('../lib/string');
@@ -41,6 +41,10 @@ var genResponseDocumentFileName = function (action) {
 
 var genExampleDocumentFileName = function (action) {
     return action.__id() + SUFFIX.EXAMPLE;
+};
+
+var genActionHtmlDocumentFileName = function (module, ctrl, action) {
+    return  module + '-' + ctrl + '-' + action.toLowerCase() + '.html';
 };
 
 var genActionID = function (str) {
@@ -266,16 +270,21 @@ var exampleDocument = function(action, docPath, example, callback){
 /**
  * @desc
  * */
-var renderActionHtmlDocument = function (docPath, oneActionDocument, callback) {
+var renderActionHtmlDocument = function (docPath, oneActionDocument, menus, callback) {
 
-    var html = engine(ACTION_TMPL_PATH, oneActionDocument);
+    var html = engine(ACTION_TMPL_PATH, {
+        documents: oneActionDocument,
+        menus: menus
+    });
+
+    console.log(JSON.stringify(menus, null, 2));
 
     var rootPath = genDocHtmlDocumentPath(docPath);
     var module = oneActionDocument.module;
     var controller = oneActionDocument.controller;
     var action = oneActionDocument.action;
 
-    var filename = module + '-' + controller + '-' + action.toLowerCase() + '.html';
+    var filename = genActionHtmlDocumentFileName(module, controller, action);
     var dirpath = path.join(rootPath, 'api');
     var filepath = path.join(dirpath, filename);
 
@@ -288,14 +297,13 @@ var renderActionHtmlDocument = function (docPath, oneActionDocument, callback) {
     });
 };
 
-
-var renderModuleMenuHtmlDocument = function () {
+/**
+ * @desc
+ * */
+var renderIndexHtmlDocument = function () {
     
 };
 
-var renderControllerMenuHtmlDocument = function () {
-
-};
 
 var copyStaticAssert = function () {
     
@@ -385,9 +393,8 @@ var renderRawDocumentToHtmlDocument = function (docPath, callback) {
             callback(err);
         }
 
-
         var documents = [];
-        var moduleMenus = [];
+        var moduleMenus = {};
 
         for(var module in rawDouments){
 
@@ -395,6 +402,8 @@ var renderRawDocumentToHtmlDocument = function (docPath, callback) {
                 module: module,
                 controllers : []
             };
+
+            moduleMenus[module] = {};
 
             for(var ctrl in rawDouments[module]){
 
@@ -404,6 +413,9 @@ var renderRawDocumentToHtmlDocument = function (docPath, callback) {
                     actions: []
                 };
 
+
+                var ctrlMenuTemp = [];
+
                 for(var action in rawDouments[module][ctrl]){
 
                     var actionTemp = {
@@ -412,6 +424,11 @@ var renderRawDocumentToHtmlDocument = function (docPath, callback) {
                         action: action,
                         methods: []
                     };
+
+                    ctrlMenuTemp.push({
+                        action: action,
+                        filename: genActionHtmlDocumentFileName(module, ctrl, action)
+                    });
 
                     for(var method in rawDouments[module][ctrl][action]){
 
@@ -434,6 +451,7 @@ var renderRawDocumentToHtmlDocument = function (docPath, callback) {
                 }
 
                 moduleTemp.controllers.push(ctrlTemp);
+                moduleMenus[module][ctrl] = ctrlMenuTemp;
             }
 
             documents.push(moduleTemp);
@@ -449,20 +467,20 @@ var renderRawDocumentToHtmlDocument = function (docPath, callback) {
 
                 async.eachLimit(actions, 1, function (action, next) {
 
-                    renderActionHtmlDocument(docPath, action, function () {
+                    renderActionHtmlDocument(docPath, action, moduleMenus[action.module], function () {
                         next();
                     });
 
                 }, function (err) {
-                    next();
+                    next(err);
                 });
 
             }, function (err) {
-                next();
+                next(err);
             });
             
         }, function (err) {
-            console.log(err);
+            callback(err);
         });
     });
 };

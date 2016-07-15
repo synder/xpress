@@ -119,6 +119,10 @@ var validateFunction = function (type, conditions) {
                 }
             }
 
+            if(rule.required == false && validator.isNullOrUndefined(value)){
+                return null;
+            }
+
             if(rule.type){
                 switch (rule.type){
                     case DATA_TYPES.IP: {
