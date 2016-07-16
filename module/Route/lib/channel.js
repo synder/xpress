@@ -4,7 +4,16 @@
 
 
 exports.validateFunc = function (routeChannel) {
+
+    var channels = {};
+
+    if(routeChannel + ''){
+        routeChannel.split('|').forEach(function (item) {
+            channels[item] = true;
+        });
+    }
+
     return function (reqChannel) {
-        return reqChannel == routeChannel;
+        return channels[reqChannel];
     };
 };
