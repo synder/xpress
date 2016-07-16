@@ -77,10 +77,12 @@ var Xpress = function (options) {
     //debug and doc
     this.__debug = options.debug;       // if need debug info
 
-
     //auto route and auto document
     this.__controller = options.controller; // the ctrl rootpath
-    this.__document = options.document;     // the doc save path
+
+    if(options.production == false){
+        this.__document = options.document;     // the doc save path
+    }
 
     //server start info
     this.__host = options.host;
@@ -280,34 +282,34 @@ Xpress.prototype.__handler = function (action) {
         throw new Error('');
     }
 
+    if(!self.__document){
+        return action.__handler;
+    }
+
     return function (req, res, next) {
 
-        if(self.__document){
+        var send = res.send;
 
-            var send = res.send;
+        res.send = function(){
+            if(res.statusCode > 199 && res.statusCode < 300){
+                var response = null;
 
-            res.send = function(){
-
-                if(res.statusCode == 200){
-                    var response = null;
-
-                    if(arguments.length > 0){
-                        try{
-                            response = JSON.parse(arguments[0]);
-                        }catch (ex){
-                            response = arguments[0];
-                        }
+                if(arguments.length > 0){
+                    try{
+                        response = JSON.parse(arguments[0]);
+                    }catch (ex){
+                        response = arguments[0];
                     }
-
-                    Document.__storeRawDocument(self.__document, action, response);
-                    Document.__storeRawDocument(self.__document, action, response, req);
-
-                    return send.apply(res, arguments);
-                }else{
-                    return send.apply(res, arguments);
                 }
-            };
-        }
+
+                Document.__storeRawDocument(self.__document, action, response);
+                Document.__storeRawDocument(self.__document, action, response, req);
+
+                return send.apply(res, arguments);
+            }else{
+                return send.apply(res, arguments);
+            }
+        };
 
         action.__handler(req, res, next);
     };

@@ -183,8 +183,12 @@ exports.storeResponseRawDocument = function (docPath, action, response, callback
 
     var responseRawDocSavePath = path.join(rawDocRootPath, moduleName, ctrlName, filename);
 
-    var stringDocument = JSON.stringify(response);
+    var stringDocument = response;
 
+    if(typeof stringDocument == 'object'){
+        stringDocument = JSON.stringify(stringDocument);
+    }
+    
     store.persist(responseRawDocSavePath, stringDocument, callback);
 };
 

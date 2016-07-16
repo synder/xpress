@@ -74,6 +74,7 @@ var readRawDocument = function (docPath, callback) {
 
             if (iname.indexOf(SUFFIX.EXAMPLE) > 0) {
                 var exampleRawDoc = JSON.parse(fs.readFileSync(innerFilePath, {encoding: 'utf8'}));
+
                 actionRawDocuments.example = {
                     request: JSON.stringify(exampleRawDoc.request, null, 2),
                     response: JSON.stringify(exampleRawDoc.response, null, 2)
@@ -81,8 +82,14 @@ var readRawDocument = function (docPath, callback) {
             }
 
             if (iname.indexOf(SUFFIX.RESPONSE) > 0) {
-                var responseRawDoc = JSON.parse(fs.readFileSync(innerFilePath, {encoding: 'utf8'}));
-                actionRawDocuments.response = JSON.stringify(responseRawDoc, null, 2);
+                var responseRawDoc = fs.readFileSync(innerFilePath, {encoding: 'utf8'});
+
+                try {
+                    responseRawDoc = JSON.parse(responseRawDoc);
+                    actionRawDocuments.response = JSON.stringify(responseRawDoc, null, 2);
+                }catch (ex){
+                    actionRawDocuments.response = responseRawDoc;
+                }
             }
 
             inext();
