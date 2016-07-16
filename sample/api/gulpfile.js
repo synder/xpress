@@ -4,11 +4,11 @@
 const gulp = require('gulp');
 const path = require('path');
 const Xpress = require('../../index');
-const document = Xpress.document;
+const Document = Xpress.Document;
 
 const docPath = path.join(__dirname, 'docs');
 
 
 gulp.task('default', function (done) {
-    document.renderRawDocumentToHtmlDocument(docPath,  done);
+    Document.renderDocument(docPath,  done);
 });

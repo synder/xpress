@@ -2,38 +2,10 @@
  * Created by synder on 16/7/11.
  */
 
-/*
-{
-    query: {
-        token: {required: true, type: 'string',  msg: '用户名不合法'}
-    },
-    body: {
-        username: {type: 'string', required: true, len: {gt: 2, lt: 20}, val: {like: ''}},
-        password: {type: 'string', required: true, len: {gt: 2, lt: 20}},
-        scores  : {type: 'array',  required: true, len: {gte: 2,  lte: 20}, val:{eq: [100, 97]}},
-        age     : {type: 'number', required: true, val: {gte: 0, lte: 100}},
-        channel : {type: 'number', required: true, val: {eq: 2}},
-        height  : {type: 'number', required: true, val: {neq: 10}},
-        gender  : {type: 'bool',   required: true, val: {in: [true, false]}},
-        mind    : {type: 'number', required: true, val: {nin: [0,1]}}
-    }
-};
-*/
 
-const validator = require('../lib/validate');
+const validator = require('../../../lib/validate');
 
-const DATA_TYPES = {
-    IP: 'ip',
-    URL: 'url',
-    EMAIL: 'email',
-    ARRAY: 'array',
-    STRING: 'string',
-    DATE: 'date',
-    BOOL: 'bool',
-    FLOAT: 'float',
-    INTEGER: 'integer',
-    NUMBER: 'number'
-};
+const DATA_TYPES = require('../enum/types');
 
 var verify = function (attr, type, key, value, rule) {
 
@@ -106,7 +78,7 @@ var verify = function (attr, type, key, value, rule) {
     return null;
 };
 
-var validateFunction = function (type, conditions) {
+var genValidateFunction = function (type, conditions) {
     return function (data) {
         for(var key in conditions){
             var rule = conditions[key];
@@ -204,4 +176,4 @@ var validateFunction = function (type, conditions) {
 
 };
 
-exports.validateFunction = validateFunction;
+exports.genValidateFunction = genValidateFunction;

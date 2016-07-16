@@ -14,15 +14,12 @@ const server = new Xpress({
     cert: null,
     trace: true,
     debug: true,
-    doc:  path.join(__dirname, 'docs'),
+    document:  path.join(__dirname, 'docs'),
     port: {
         http: 8003,
         https: null
     },
-    route: {
-        auto: true,
-        controller: path.join(__dirname, 'controller')
-    }
+    controller: path.join(__dirname, 'controller')
 });
 
 //--------------------------------------------------

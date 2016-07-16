@@ -2,28 +2,15 @@
  * Created by synder on 16/4/23.
  */
 const colors = require('colors');
-var METHODS = require('./method');
-const string = require('../lib/string');
 
-const logger = function (color, func, method, version, channel, path) {
-    var str = colors[color](string.pad('Time:' + Date.now(), 22, ' ', 'right')) + ' '
-        + colors[color](string.pad(func, 10, ' ', 'right')) + ' '
-        + colors[color](string.pad(method, 6, ' ', 'right'));
+const string = require('../../lib/string');
+const Logger = require('../Logger');
 
-    if(version){
-        str += ' ' + colors[color]('version:' + string.pad(version, 5, ' ', 'right'));
-    }
+var channel = require('./lib/channel');
+var version = require('./lib/version');
+var METHODS = require('./lib/method');
 
-    if(channel){
-        str += ' '+ colors[color]('channel:' + string.pad(channel, 5, ' ', 'right'));
-    }
-
-    if(path){
-        str += ' ' + colors[color](path);
-    }
-
-    console.log(str);
-};
+const logger = Logger.create();
 
 /**
  * @desc show warn info
@@ -41,12 +28,23 @@ const warn = function (option) {
 /***
  * @desc wraper http method on Xpress instance
  */
-const wraper = function (option, handler, trace) {
+const wraper = function (option, handler, debug) {
+
+    if(option.v){
+        var versionCheck = version.validateFunc(option.v);
+    }
+
+    if(option.c){
+        var channelCheck = version.validateFunc(option.c);
+    }
+
+
     return function (req, res, next) {
 
         if (option.v) {
-            if (req.version != option.v) {
-                if(trace){
+
+            if (!versionCheck(req.version)) {
+                if(debug){
                     logger('yellow', 'Skip:', req.method, option.v, option.c, req.route.path);
                 }
                 return next();
@@ -54,15 +52,15 @@ const wraper = function (option, handler, trace) {
         }
 
         if (option.c) {
-            if (req.channel != option.c) {
-                if(trace){
+            if (!channelCheck(req.channel)) {
+                if(debug){
                     logger('yellow', 'Skip:', req.method, option.v, option.c, req.route.path);
                 }
                 return next();
             }
         }
 
-        if(trace){
+        if(debug){
             logger('green', 'Match:', req.method, option.v, option.c, req.route.path);
         }
 
@@ -71,7 +69,7 @@ const wraper = function (option, handler, trace) {
 };
 
 
-exports.method = function (Prototype, instance, router, trace) {
+exports.method = function (Prototype, instance, router, debug) {
 
     METHODS.push('all');
 
@@ -104,7 +102,7 @@ exports.method = function (Prototype, instance, router, trace) {
                 } else {
                     warn(arguments[0]);
                     for (var y = 1; y < arguments.length; y++) {
-                        router[method](wraper(arguments[0], arguments[y], trace));
+                        router[method](wraper(arguments[0], arguments[y], debug));
                     }
                 }
                 return instance;
@@ -116,7 +114,7 @@ exports.method = function (Prototype, instance, router, trace) {
 
                 for (var i = 2; i < arguments.length; i++) {
                     if (typeof arguments[i]) {
-                        router[method](arguments[0], wraper(arguments[1], arguments[i], trace));
+                        router[method](arguments[0], wraper(arguments[1], arguments[i], debug));
                     }
                 }
 
