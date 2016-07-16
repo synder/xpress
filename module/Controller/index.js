@@ -238,6 +238,7 @@ Controller.prototype.handle = function (handler) {
 
                 if(a){
                     var errorA = new Error(a);
+                    errorA.code = 400;
                     return next(errorA);
                 }
 
@@ -245,6 +246,7 @@ Controller.prototype.handle = function (handler) {
 
                 if(b){
                     var errorB = new Error(b);
+                    errorA.code = 400;
                     return next(errorB);
                 }
 
@@ -252,6 +254,7 @@ Controller.prototype.handle = function (handler) {
 
                 if(c){
                     var errorC = new Error(c);
+                    errorA.code = 400;
                     return next(errorC);
                 }
 
@@ -259,6 +262,7 @@ Controller.prototype.handle = function (handler) {
 
                 if(d){
                     var errorD = new Error(d);
+                    errorA.code = 400;
                     return next(errorD);
                 }
 
