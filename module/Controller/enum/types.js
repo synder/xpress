@@ -13,5 +13,6 @@ module.exports = {
     BOOL: 'bool',
     FLOAT: 'float',
     INTEGER: 'integer',
-    NUMBER: 'number'
+    NUMBER: 'number',
+    OBJECT: 'object'
 };

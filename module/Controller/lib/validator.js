@@ -75,102 +75,138 @@ var verify = function (attr, type, key, value, rule) {
         }
     }
 
+    if(Array.isArray(rule.has)){
+        rule.has.forEach(function (property) {
+            if(!value.hasOwnProperty(property)){
+                return type + '.' + key + '.' + attr + ' has none property "' + property + '"';
+            }
+        });
+    }
+
     return null;
 };
 
-var genValidateFunction = function (type, conditions) {
-    return function (data) {
-        for(var key in conditions){
-            var rule = conditions[key];
+var genValidateFunction = function (type, validate) {
 
-            var value = data[key];
+    var conditions = validate;
+
+    return function (data) {
+
+        var rule,
+            param,
+            value;
+
+        for(var i = 0, len = conditions.length; i < len; i++){
+
+            param = conditions[i].param;
+            rule = conditions[i].rule;
+
+            value = data[param];
 
             if(rule.required == true){
                 if(!value){
-                    return type + '.' + key + ' is required';
+                    return type + '.' + param + ' is required';
                 }
-            }
-
-            if(rule.required == false && validator.isNullOrUndefined(value)){
-                return null;
+            }else{
+                if(validator.isNullOrUndefined(value)){
+                    continue;
+                }
             }
 
             if(rule.type){
                 switch (rule.type){
                     case DATA_TYPES.IP: {
                         if(!validator.isIPAddress(value)){
-                            return type + '.' + key + ' is not ip';
+                            return type + '.' + param + ' is not ip';
                         }
                     } break;
                     case DATA_TYPES.URL: {
                         if(!validator.isUrl(value)){
-                            return type + '.' + key + ' is not url';
+                            return type + '.' + param + ' is not url';
                         }
                     } break;
                     case DATA_TYPES.EMAIL: {
                         if(!validator.isEmail(value)){
-                            return type + '.' + key + ' is not email';
+                            return type + '.' + param + ' is not email';
                         }
                     } break;
                     case DATA_TYPES.BOOL: {
                         if(!validator.isBool(value)){
-                            return type + '.' + key + ' is not bool';
+                            return type + '.' + param + ' is not bool';
                         }
                     } break;
                     case DATA_TYPES.STRING: {
                         if(!validator.isString(value)){
-                            return type + '.' + key + ' is not string';
+                            return type + '.' + param + ' is not string';
                         }
                     } break;
                     case DATA_TYPES.ARRAY: {
                         if(!validator.isArray(value)){
-                            return type + '.' + key + ' is not string';
+                            return type + '.' + param + ' is not string';
                         }
                     } break;
                     case DATA_TYPES.DATE: {
-                        if(!validator.isDate(value)){
-                            return type + '.' + key + ' is not date';
+
+                        if(!validator.isDateable(value)){
+                            return type + '.' + param + ' is not date';
                         }
                     } break;
                     case DATA_TYPES.FLOAT: {
-                        if(!validator.isFloat(value)){
-                            return type + '.' + key + ' is not float';
+                        if(!validator.isFloatable(value)){
+                            return type + '.' + param + ' is not float';
                         }
                     } break;
                     case DATA_TYPES.INTEGER: {
-                        if(!validator.isInt(value)){
-                            return type + '.' + key + ' is not integer';
+                        if(!validator.isIntable(value)){
+                            return type + '.' + param + ' is not integer';
                         }
                     } break;
                     case DATA_TYPES.NUMBER: {
-                        if(!validator.isNumber(value)){
-                            return type + '.' + key + ' is not number';
+                        if(!validator.isNumable(value)){
+                            return type + '.' + param + ' is not number';
                         }
+                    } break;
+                    case DATA_TYPES.OBJECT: {
+                        if(!validator.isObject(value)){
+                            return type + '.' + param + ' is not object';
+                        }
+
+                        if(rule.pro){
+                            var msg = verify('property', type, param, value, rule.val);
+                            if(msg){
+                                return rule.msg || msg;
+                            }
+                        }
+
                     } break;
                     default: throw new Error(rule.type + ' is not support');
                 }
             }
 
-            if(typeof rule.validator == 'function'){
+            if(rule.validator && typeof rule.validator === 'function'){
                 if(!rule.validator(value)){
-                    return rule.msg || type + '.' + key + ' is validate failed';
+                    return rule.msg || type + '.' + param + ' is validate failed';
+                }else{
+                    return null;
                 }
             }else{
+
                 if(rule.len){
-                    var lenVerifyMsg = verify('length', type, key, value.length, rule.len);
+                    var lenVerifyMsg = verify('length', type, param, value.length, rule.len);
                     if(lenVerifyMsg){
                         return rule.msg || lenVerifyMsg;
                     }
                 }
 
                 if(rule.val){
-                    var valVerifyMsg = verify('value', type, key, value, rule.val);
+                    var valVerifyMsg = verify('value', type, param, value, rule.val);
                     if(valVerifyMsg){
                         return rule.msg || valVerifyMsg;
                     }
                 }
             }
         }
+
         return null;
     };
 

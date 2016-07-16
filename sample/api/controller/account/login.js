@@ -14,7 +14,8 @@ Controller.action(exports, 'login').post()
     .validate({
         body: {
             username: {type: 'string', required: true, len: {gt: 2, lt: 20}, val: {like: ''}},
-            password: {type: 'string', required: true, len: {gt: 2, lt: 20}}
+            password: {type: 'string', required: true, len: {gt: 2, lt: 20}},
+            object:   {type: 'object', required: true, pro: {has: ['name', 'age']}}
         }
     })
     .handle( function(req, res, next){
@@ -86,6 +87,11 @@ Controller.action(exports, 'logout').post()
 Controller.action(exports, 'logout').get()
     .summary('用户登出')
     .desc('用户退出登陆')
+    .validate({
+        query: {
+            time: {type: 'date', required: true, desc: '测试时间'}
+        }
+    })
     .handle( function(req, res, next){
         res.json({
             code: 1,

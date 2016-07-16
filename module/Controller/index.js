@@ -137,22 +137,38 @@ Controller.prototype.validate = function (validate) {
     if(typeof validate !== 'object'){
         throw new Error('validate should be a function');
     }
+
     this.__validate = validate;
 
+    var genConditions = function (rules) {
+        var conditions = [];
+
+        for(var key in rules){
+            if(rules.hasOwnProperty(key)){
+                conditions.push({
+                    param: key,
+                    rule: rules[key]
+                });
+            }
+        }
+
+        return conditions;
+    };
+
     if(this.__validate.header){
-        this.__validateHeaderFunc = validator.genValidateFunction('header', this.__validate.header);
+        this.__validateHeaderFunc = validator.genValidateFunction('header', genConditions(this.__validate.header));
     }
 
     if(this.__validate.param){
-        this.__validateParamFunc = validator.genValidateFunction('param', this.__validate.param);
+        this.__validateParamFunc = validator.genValidateFunction('param', genConditions(this.__validate.param));
     }
 
     if(this.__validate.query){
-        this.__validateQueryFunc = validator.genValidateFunction('query', this.__validate.query);
+        this.__validateQueryFunc = validator.genValidateFunction('query', genConditions(this.__validate.query));
     }
 
     if(this.__validate.body){
-        this.__validateBodyFunc = validator.genValidateFunction('body', this.__validate.body);
+        this.__validateBodyFunc = validator.genValidateFunction('body', genConditions(this.__validate.body));
     }
 
     return this;
@@ -226,54 +242,27 @@ Controller.prototype.handle = function (handler) {
 
     this.__exports[exportsName] = self;
 
-    this.__handler = function (req, res, next) {
-        if(self.__before){
-            self.__before(req, res, function (err) {
-
-                if(err){
-                    return next(err);
-                }
-
-                var a = self.__validateHeaderFunc(req.headers);
-
-                if(a){
-                    var errorA = new Error(a);
-                    errorA.code = 400;
-                    return next(errorA);
-                }
-
-                var b = self.__validateParamFunc(req.params);
-
-                if(b){
-                    var errorB = new Error(b);
-                    errorA.code = 400;
-                    return next(errorB);
-                }
-
-                var c = self.__validateQueryFunc(req.query);
-
-                if(c){
-                    var errorC = new Error(c);
-                    errorA.code = 400;
-                    return next(errorC);
-                }
-
-                var d = self.__validateBodyFunc(req.body);
-
-                if(d){
-                    var errorD = new Error(d);
-                    errorA.code = 400;
-                    return next(errorD);
-                }
-
-                handler(req, res, next);
-            });
+    var flow = function (req, res, next, before, callback) {
+        if(before){
+            before(res, req, callback);
         }else{
+            callback();
+        }
+    };
+
+    this.__handler = function (req, res, next) {
+
+        flow(req, res, next, self.__before, function (err) {
+            
+            if(err){
+                return next();
+            }
 
             var a = self.__validateHeaderFunc(req.headers);
 
             if(a){
                 var errorA = new Error(a);
+                errorA.code = 400;
                 return next(errorA);
             }
 
@@ -281,6 +270,7 @@ Controller.prototype.handle = function (handler) {
 
             if(b){
                 var errorB = new Error(b);
+                errorB.code = 400;
                 return next(errorB);
             }
 
@@ -288,6 +278,7 @@ Controller.prototype.handle = function (handler) {
 
             if(c){
                 var errorC = new Error(c);
+                errorC.code = 400;
                 return next(errorC);
             }
 
@@ -295,11 +286,12 @@ Controller.prototype.handle = function (handler) {
 
             if(d){
                 var errorD = new Error(d);
+                errorD.code = 400;
                 return next(errorD);
             }
 
             handler(req, res, next);
-        }
+        });
     };
 };
 //-------------------------------------------------------

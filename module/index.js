@@ -333,10 +333,15 @@ Xpress.prototype.__routing = function (callback) {
         var modulePath = path.join(dir, name);
 
         var module = require(modulePath);
+        var action;
 
         for(var key in module){
 
-            var action = module[key];
+            if(!module.hasOwnProperty(key)){
+                continue;
+            }
+
+            action = module[key];
 
             if(!(action instanceof  Controller)){
                 continue;

@@ -39,7 +39,8 @@ server.error(404, function (err, req, res, next) {
 });
 
 server.error(500, function (err, req, res, next) {
-    res.status(500).json(err.stack);
+    var code = err.code || 500;
+    res.status(code).json(err.message);
 });
 
 //--------------------------------------------------
