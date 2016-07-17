@@ -121,6 +121,8 @@ var renderApiDocument = function (docPath, oneActionDocument, menus, callback) {
         menus: menus
     });
 
+    html = html.replace(/^[\s|\t| ]*\n/igm ,'');
+
     var moduleName = oneActionDocument.module.toUpperCase();
     var ctrlName = oneActionDocument.controller.toUpperCase();
     var actionName = oneActionDocument.action.toUpperCase();

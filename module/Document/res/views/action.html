@@ -4,17 +4,13 @@
     <%include('./layout/head')%>
 </head>
 <body>
-
 <!-- nav -->
 <%include('./layout/navbar')%>
-
 <!-- banner -->
 <%include('./layout/banner')%>
-
 <!-- content -->
 <div class="container bs-docs-container">
     <div class="row">
-
         <!--doc section-->
         <div class="col-md-10" role="main">
             <%for(var i = 0; i< documents.methods.length; i++){%>
@@ -38,17 +34,13 @@
                                     <span>
                                         <%= version.method.toUpperCase()%>
                                     </span>
-
                                     <%if(version.version){%>
                                     <span>v: <%= version.version%></span>
                                     <%}%>
-
                                     <%if(version.channel){%>
                                     <span>c: <%= version.channel%></span>
                                     <%}%>
-
                                     <span><%= version.path%></span>
-
                                     <%if(version.deprecated){%>
                                     <span> 已经废除</span>
                                     <%}%>
@@ -143,7 +135,6 @@
             </div>
             <%}%>
         </div>
-
         <!--right menu-->
         <div class="col-md-2" role="complementary">
             <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm">
@@ -158,7 +149,6 @@
                         </ul>
                     </li>
                     <%}%>
-
                 </ul>
                 <a class="back-to-top" href="#top">
                     返回顶部
@@ -167,12 +157,9 @@
         </div>
     </div>
 </div>
-
 <!-- footer -->
 <%include('./layout/footer')%>
-
 <!-- script -->
 <%include('./layout/script')%>
-
 </body>
 </html>

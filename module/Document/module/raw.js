@@ -154,8 +154,6 @@ exports.storeActionRawDocument = function (docPath, action, callback) {
         objectDocument.request.push(bodyParam);
     }
 
-    var stringDocument = JSON.stringify(objectDocument);
-
     var rawDocRootPath = util.getRawDocRootPath(docPath);
 
     var moduleName = action.__module;
@@ -164,6 +162,8 @@ exports.storeActionRawDocument = function (docPath, action, callback) {
     var filename = util.genActionRawDocFileName(action);
 
     var rawActionDocSavePath = path.join(rawDocRootPath, moduleName, ctrlName, filename);
+
+    var stringDocument = JSON.stringify(objectDocument);
 
     store.persist(rawActionDocSavePath, stringDocument, callback);
 };
