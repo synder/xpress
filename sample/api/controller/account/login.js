@@ -1,16 +1,15 @@
 /**
- * Created by synder on 16/7/15.
- */
-/**
  * @author xpress
  * @date 16/1/10
  * @desc
  */
 
 Controller.action(exports, 'login').post()
-    .deprecated()
+    .path('/:id')
     .summary('用户登陆')
     .desc('用户通过用户名和密码登陆到账户')
+    .version('>=20')
+    .channel('ios|and')
     .validate({
         body: {
             username: {type: 'string', required: true, len: {gt: 2, lt: 20}, val: {like: ''}},
@@ -46,6 +45,7 @@ Controller.action(exports, 'login').post()
             }
         });
     });
+
 
 Controller.action(exports, 'password').post()
     .summary('用户修改密码')

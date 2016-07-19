@@ -12,7 +12,7 @@ const server = new Xpress({
     host: null,
     key: null,
     cert: null,
-    debug: false,
+    debug: true,
     production: false,
     document:  path.join(__dirname, 'docs'),
     port: {
