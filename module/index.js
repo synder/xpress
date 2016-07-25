@@ -74,7 +74,7 @@ var Xpress = function (options) {
 
     EventEmitter.call(this);
 
-    //debug and doc
+    //debug
     this.__debug = options.debug;       // if need debug info
 
     //auto route and auto document

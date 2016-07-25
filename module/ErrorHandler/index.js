@@ -17,8 +17,9 @@ exports.create = function (code) {
         }
     }else{
         return function (err, req, res) {
+            var code = err.code || 500;
             console.error(err.stack);
-            res.send(err.message);
+            res.status(code).send(err.message);
         }
     }
 };
