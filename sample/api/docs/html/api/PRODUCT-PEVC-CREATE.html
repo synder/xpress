@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中文文档</title>
+<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+<link href="../assets/css/docs.min.css" rel="stylesheet">
+<link href="../assets/css/highlight.css" rel="stylesheet">
+<link href="../assets/css/codemirror.css" rel="stylesheet">
+</head>
+<body>
+<!-- nav -->
+<header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">SDox</a>
+        </div>
+        <nav id="bs-navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="/">首页</a>
+                </li>
+                <li>
+                    <a href="/api">API</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<!-- banner -->
+<div class="bs-docs-header" id="content" tabindex="-1">
+    <div class="container">
+        <h1>起步</h1>
+        <p>简要介绍 Bootstrap，以及如何下载、使用，还有基本模版和案例，等等。</p>
+    </div>
+</div>
+<!-- content -->
+<div class="container bs-docs-container">
+    <div class="row">
+        <!--doc section-->
+        <div class="col-md-10" role="main">
+            
+            <div class="bs-docs-section">
+                
+                
+                    
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-body ">
+                            <div>
+                                <h3>
+                                    <span>create</span>
+                                    <span>-</span>
+                                    <span>创建订单</span>
+                                </h3>
+                                <p></p>
+                            </div>
+                            <div class="bs-callout  bs-callout-info">
+                                <p class="">
+                                    <span>
+                                        POST
+                                    </span>
+                                    
+                                    
+                                    <span>/product/pevc/create</span>
+                                    
+                                </p>
+                            </div>
+                            <div class="bs-example bs-example-tabs">
+                                <div>
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active">
+                                            <a href="#req3055080a194114958e328e1b1aa382d2"
+                                               role="tab"
+                                               data-toggle="tab"
+                                               aria-controls="home"
+                                               aria-expanded="true">请求(Request)</a>
+                                        </li>
+                                        <li role="presentation" class="">
+                                            <a href="#res3055080a194114958e328e1b1aa382d2"
+                                               role="tab"
+                                               data-toggle="tab"
+                                               aria-controls="profile"
+                                               aria-expanded="false">响应(Response)</a>
+                                        </li>
+                                        <li role="presentation" class="">
+                                            <a href="#exa3055080a194114958e328e1b1aa382d2"
+                                               role="tab"
+                                               data-toggle="tab"
+                                               aria-controls="profile"
+                                               aria-expanded="false">例子(Example)</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="req3055080a194114958e328e1b1aa382d2" role="tabpanel" class="tab-pane fade active in"
+                                             aria-labelledby="request">
+                                            
+                                            
+                                            <div>
+                                                <h4>Param:</h4>
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>参数名称</th>
+                                                        <th>参数类型</th>
+                                                        <th>是否必须</th>
+                                                        <th>参数说明</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    
+                                                    
+                                                    <tr>
+                                                        <th>id</th>
+                                                        <td>Number</td>
+                                                        <td>是</td>
+                                                        <td>id should match {&#34;gt&#34;:2,&#34;lt&#34;:20}</td>
+                                                    </tr>
+                                                    
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            
+                                            
+                                            <div>
+                                                <h4>Body:</h4>
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>参数名称</th>
+                                                        <th>参数类型</th>
+                                                        <th>是否必须</th>
+                                                        <th>参数说明</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    
+                                                    
+                                                    <tr>
+                                                        <th>name</th>
+                                                        <td>String</td>
+                                                        <td>是</td>
+                                                        <td>name should match {&#34;like&#34;:&#34;&#34;} and name.length should match {&#34;gt&#34;:2,&#34;lt&#34;:20};</td>
+                                                    </tr>
+                                                    
+                                                    
+                                                    <tr>
+                                                        <th>price</th>
+                                                        <td>String</td>
+                                                        <td>是</td>
+                                                        <td>price.length should match {&#34;gt&#34;:2,&#34;lt&#34;:20};</td>
+                                                    </tr>
+                                                    
+                                                    
+                                                    <tr>
+                                                        <th>date</th>
+                                                        <td>Number</td>
+                                                        <td>否</td>
+                                                        <td>date should match {&#34;neq&#34;:10}</td>
+                                                    </tr>
+                                                    
+                                                    
+                                                    <tr>
+                                                        <th>length</th>
+                                                        <td>Number</td>
+                                                        <td>否</td>
+                                                        <td>length should match {&#34;eq&#34;:2}</td>
+                                                    </tr>
+                                                    
+                                                    
+                                                    <tr>
+                                                        <th>height</th>
+                                                        <td>Number</td>
+                                                        <td>否</td>
+                                                        <td>height should match {&#34;gte&#34;:0,&#34;lte&#34;:100}</td>
+                                                    </tr>
+                                                    
+                                                    
+                                                    <tr>
+                                                        <th>weight</th>
+                                                        <td>Array</td>
+                                                        <td>否</td>
+                                                        <td>weight should match {&#34;eq&#34;:[100,98]} and weight.length should match {&#34;gte&#34;:2,&#34;lte&#34;:20};</td>
+                                                    </tr>
+                                                    
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            
+                                        </div>
+                                        <div id="res3055080a194114958e328e1b1aa382d2" role="tabpanel" class="tab-pane fade"
+                                             aria-labelledby="response">
+                                            <div class="highlight">
+                                             <pre>
+                                                 <code class="javascript"></code>
+                                            </pre>
+                                            </div>
+                                        </div>
+                                        <div id="exa3055080a194114958e328e1b1aa382d2" role="tabpanel" class="tab-pane fade"
+                                             aria-labelledby="example">
+                                            <div class="highlight">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                
+            </div>
+            
+        </div>
+        <!--right menu-->
+        <div class="col-md-2" role="complementary">
+            <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm">
+                <ul class="nav bs-docs-sidenav">
+                    
+                    <li class="active">
+                        <a href="#grunt">PEVC</a>
+                        <ul class="nav">
+                            
+                            <li><a href="./PRODUCT-PEVC-CREATE.html">create</a></li>
+                            
+                        </ul>
+                    </li>
+                    
+                </ul>
+                <a class="back-to-top" href="#top">
+                    返回顶部
+                </a>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- footer -->
+<footer class="bs-docs-footer" role="contentinfo">
+    <div class="container">
+        <ul class="bs-docs-footer-links text-muted">
+            <li>当前版本： v3.3.5</li>
+            <li>&middot;</li>
+            <li><a href="https://github.com/twbs/bootstrap">GitHub 仓库</a></li>
+        </ul>
+    </div>
+</footer>
+<!-- script -->
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../assets/js/highlight.min.js"></script>
+<script src="../assets/js/codemirror.min.js"></script>
+<script src="../assets/js/doc.min.js"></script>
+</body>
+</html>

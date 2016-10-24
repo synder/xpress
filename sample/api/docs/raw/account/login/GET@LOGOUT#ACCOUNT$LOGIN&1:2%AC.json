@@ -1,0 +1,1 @@
+{"action":"logout","summary":"用户登出","method":"get","path":"/account/login/logout","version":1,"channel":2,"author":null,"desc":"用户退出登陆","deprecated":null,"request":[{"region":"Query","params":[{"name":"token","types":"String","nullable":false,"description":"登陆的Token; "}]}]}

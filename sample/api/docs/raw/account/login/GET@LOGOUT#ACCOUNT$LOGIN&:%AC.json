@@ -1,0 +1,1 @@
+{"action":"logout","summary":"用户登出","method":"get","path":"/account/login/logout","version":null,"channel":null,"author":null,"desc":"用户退出登陆","deprecated":null,"request":[{"region":"Query","params":[{"name":"time","types":"Date","nullable":false,"description":"测试时间; "}]}]}

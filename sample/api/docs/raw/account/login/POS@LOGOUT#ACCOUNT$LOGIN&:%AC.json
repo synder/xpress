@@ -1,0 +1,1 @@
+{"action":"logout","summary":"用户登出P","method":"post","path":"/account/login/logout","version":null,"channel":null,"author":null,"desc":"用户退出登陆P","deprecated":true,"request":[{"region":"Query","params":[{"name":"token","types":"String","nullable":false,"description":"登陆的Token; "}]}]}
